@@ -1,0 +1,281 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LivelloCorso {
+  bambini
+  ragazzi
+  adulti
+  agonisti
+  master
+}
+
+enum GiornoSettimana {
+  lunedi
+  martedi
+  mercoledi
+  giovedi
+  venerdi
+  sabato
+  domenica
+}
+
+enum MediaType {
+  foto
+  video
+}
+
+enum StatoIscrizione {
+  attiva
+  sospesa
+  scaduta
+  in_attesa
+}
+
+enum StatoContatto {
+  nuovo
+  letto
+  risposto
+  archiviato
+}
+
+enum TipoCintura {
+  bianca
+  gialla
+  arancione
+  verde
+  blu
+  rossa
+  nera_1dan
+  nera_2dan
+  nera_3dan
+  nera_4dan_piu
+}
+
+model AdminUser {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  passwordHash     String    @map("password_hash")
+  nome             String
+  cognome          String
+  ruolo            String    @default("editor")
+  avatarUrl        String?   @map("avatar_url")
+  ultimoAccesso    DateTime? @map("ultimo_accesso")
+  refreshTokenHash String?   @map("refresh_token_hash")
+  isActive         Boolean   @default(true) @map("is_active")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  news         News[]
+  galleria     Galleria[]
+  configUpdates SitoConfig[]
+  auditLogs    AuditLog[]
+
+  @@map("admin_users")
+}
+
+model SitoConfig {
+  chiave      String   @id
+  valore      String?
+  tipo        String   @default("text")
+  descrizione String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedBy   String?  @map("updated_by")
+
+  admin AdminUser? @relation(fields: [updatedBy], references: [id])
+
+  @@map("sito_config")
+}
+
+model Maestro {
+  id              String      @id @default(uuid())
+  nome            String
+  cognome         String
+  titolo          String?
+  bio             String?
+  fotoUrl         String?     @map("foto_url")
+  cintura         TipoCintura?
+  dan             Int?
+  anniEsperienza  Int?        @map("anni_esperienza")
+  specializzazione String?
+  ordine          Int         @default(0)
+  isVisible       Boolean     @default(true) @map("is_visible")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  orari OrarioCorso[]
+
+  @@map("maestri")
+}
+
+model Corso {
+  id                  String       @id @default(uuid())
+  nome                String
+  livello             LivelloCorso
+  descrizione         String?
+  descrizionBreve     String?      @map("descrizione_breve")
+  etaMin              Int?         @map("eta_min")
+  etaMax              Int?         @map("eta_max")
+  prezzoMensile       Decimal?     @map("prezzo_mensile") @db.Decimal(8, 2)
+  prezzoTrimestrale   Decimal?     @map("prezzo_trimestrale") @db.Decimal(8, 2)
+  prezzoAnnuale       Decimal?     @map("prezzo_annuale") @db.Decimal(8, 2)
+  fotoCopertina       String?      @map("foto_copertina")
+  icona               String?
+  coloreTema          String?      @map("colore_tema")
+  ordine              Int          @default(0)
+  isActive            Boolean      @default(true) @map("is_active")
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @updatedAt @map("updated_at")
+
+  orari       OrarioCorso[]
+  iscritti    Iscritto[]
+  prenotazioni PrenotazioneProva[]
+
+  @@map("corsi")
+}
+
+model OrarioCorso {
+  id        String          @id @default(uuid())
+  corsoId   String          @map("corso_id")
+  giorno    GiornoSettimana
+  oraInizio DateTime        @map("ora_inizio") @db.Time
+  oraFine   DateTime        @map("ora_fine") @db.Time
+  sala      String?
+  maestroId String?         @map("maestro_id")
+  note      String?
+  isActive  Boolean         @default(true) @map("is_active")
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  corso   Corso    @relation(fields: [corsoId], references: [id], onDelete: Cascade)
+  maestro Maestro? @relation(fields: [maestroId], references: [id])
+
+  @@map("orari_corsi")
+}
+
+model Galleria {
+  id              String    @id @default(uuid())
+  titolo          String?
+  descrizione     String?
+  tipo            MediaType @default(foto)
+  url             String
+  thumbnailUrl    String?   @map("thumbnail_url")
+  altText         String?   @map("alt_text")
+  categoria       String?
+  dimensioneBytes BigInt?   @map("dimensione_bytes")
+  larghezza       Int?
+  altezza         Int?
+  ordine          Int       @default(0)
+  isVisible       Boolean   @default(true) @map("is_visible")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  uploadedBy      String?   @map("uploaded_by")
+
+  admin AdminUser? @relation(fields: [uploadedBy], references: [id])
+
+  @@map("galleria")
+}
+
+model News {
+  id            String    @id @default(uuid())
+  titolo        String
+  slug          String    @unique
+  contenuto     String
+  estratto      String?
+  fotoCopertina String?   @map("foto_copertina")
+  tags          String[]
+  isPublished   Boolean   @default(false) @map("is_published")
+  publishedAt   DateTime? @map("published_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  autoreId      String?   @map("autore_id")
+
+  autore AdminUser? @relation(fields: [autoreId], references: [id])
+
+  @@map("news")
+}
+
+model Iscritto {
+  id             String          @id @default(uuid())
+  nome           String
+  cognome        String
+  email          String?         @unique
+  telefono       String?
+  dataNascita    DateTime?       @map("data_nascita") @db.Date
+  codiceFiscale  String?         @unique @map("codice_fiscale")
+  indirizzo      String?
+  citta          String?
+  cap            String?
+  cinturaAttuale TipoCintura?    @default(bianca) @map("cintura_attuale")
+  danAttuale     Int?            @default(0) @map("dan_attuale")
+  stato          StatoIscrizione @default(in_attesa)
+  corsoId        String?         @map("corso_id")
+  dataIscrizione DateTime?       @map("data_iscrizione") @db.Date
+  dataScadenza   DateTime?       @map("data_scadenza") @db.Date
+  note           String?
+  consensoGdpr   Boolean         @default(false) @map("consenso_gdpr")
+  consensoFoto   Boolean         @default(false) @map("consenso_foto")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  corso Corso? @relation(fields: [corsoId], references: [id])
+
+  @@map("iscritti")
+}
+
+model PrenotazioneProva {
+  id            String    @id @default(uuid())
+  nome          String
+  cognome       String
+  email         String
+  telefono      String?
+  eta           Int?
+  corsoId       String?   @map("corso_id")
+  messaggio     String?
+  dataPreferita DateTime? @map("data_preferita") @db.Date
+  stato         String    @default("nuova")
+  noteAdmin     String?   @map("note_admin")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  corso Corso? @relation(fields: [corsoId], references: [id])
+
+  @@map("prenotazioni_prova")
+}
+
+model MessaggioContatto {
+  id         String        @id @default(uuid())
+  nome       String
+  email      String
+  telefono   String?
+  oggetto    String?
+  messaggio  String
+  ipAddress  String?       @map("ip_address")
+  userAgent  String?       @map("user_agent")
+  stato      StatoContatto @default(nuovo)
+  noteAdmin  String?       @map("note_admin")
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+
+  @@map("messaggi_contatto")
+}
+
+model AuditLog {
+  id        BigInt   @id @default(autoincrement())
+  userId    String?  @map("user_id")
+  azione    String
+  tabella   String?
+  recordId  String?  @map("record_id")
+  datiPrima Json?    @map("dati_prima")
+  datiDopo  Json?    @map("dati_dopo")
+  ipAddress String?  @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user AdminUser? @relation(fields: [userId], references: [id])
+
+  @@map("audit_log")
+}

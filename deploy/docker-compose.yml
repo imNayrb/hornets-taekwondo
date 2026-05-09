@@ -1,0 +1,102 @@
+version: '3.9'
+
+services:
+  # ── PostgreSQL Database ─────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: hornets_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hornets_taekwondo
+      POSTGRES_USER: ${POSTGRES_USER:-hornets}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hornets} -d hornets_taekwondo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hornets_net
+
+  # ── Backend Express API ─────────────────────────────────────
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: hornets_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hornets}:${POSTGRES_PASSWORD}@postgres:5432/hornets_taekwondo
+      JWT_SECRET: ${JWT_SECRET:?err}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?err}
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      PORT: 4000
+      NODE_ENV: production
+      UPLOAD_DIR: /app/uploads
+      MAX_FILE_SIZE: 10485760
+      CORS_ORIGIN: ${FRONTEND_URL:-https://hornets-taekwondo.it}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?err}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?err}
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hornets_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Frontend Next.js ────────────────────────────────────────
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.hornets-taekwondo.it/api}
+    container_name: hornets_frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hornets_net
+
+  # ── Nginx Reverse Proxy ─────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: hornets_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - uploads_data:/var/www/uploads:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - hornets_net
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  hornets_net:
+    driver: bridge
