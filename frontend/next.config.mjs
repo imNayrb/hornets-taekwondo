@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost', port: '4000' },
+
       { protocol: 'https', hostname: 'hornets-taekwondo.it' },
     ],
     formats: ['image/avif', 'image/webp'],

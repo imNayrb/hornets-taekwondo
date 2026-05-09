@@ -1,159 +1,162 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ChevronDown, Play } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, delay, ease: [0.25, 0.46, 0.45, 0.94] },
-  }),
-};
+const fadeUp = (delay = 0) => ({
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] } },
+});
 
 export function HeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.addEventListener('canplay', () => setVideoLoaded(true));
-    video.play().catch(() => {});
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            videoLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          aria-hidden="true"
-        >
-          <source src="/videos/hero-bg.mp4" type="video/mp4" />
-          <source src="/videos/hero-bg.webm" type="video/webm" />
-        </video>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
 
-        {/* Fallback gradient when video not loaded */}
-        {!videoLoaded && (
-          <div className="absolute inset-0 bg-gradient-diagonal from-hornets-black-soft via-hornets-black to-hornets-black" />
-        )}
-
-        {/* Overlay */}
-        <div className="video-overlay absolute inset-0" />
-
-        {/* Decorative yellow line */}
-        <motion.div
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 1.2, delay: 0.5 }}
-          className="absolute left-8 lg:left-16 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-hornets-yellow to-transparent origin-top"
-        />
+      {/* Mesh gradient background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full bg-hornets-yellow/10 blur-[120px] translate-x-1/3 -translate-y-1/4" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-hornets-yellow/8 blur-[100px] -translate-x-1/4 translate-y-1/4" />
+        <div className="absolute top-1/2 left-1/2 w-[300px] h-[300px] rounded-full bg-hornets-yellow/5 blur-[80px] -translate-x-1/2 -translate-y-1/2" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 section-container text-center lg:text-left pt-24">
-        <div className="max-w-4xl">
-          {/* Label */}
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={0.2}
-            className="section-label mb-6"
-          >
-            ASD Hornets Taekwondo · Catanzaro
-          </motion.p>
+      {/* Grid pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(#0D0D0D 1px, transparent 1px), linear-gradient(90deg, #0D0D0D 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
 
-          {/* Main Title */}
+      <div className="relative z-10 section-container pt-28 pb-20">
+        <div className="max-w-5xl mx-auto text-center">
+
+          {/* Badge */}
+          <motion.div variants={fadeUp(0.1)} initial="hidden" animate="visible" className="flex justify-center mb-8">
+            <span className="section-label">ASD Hornets Taekwondo · Catanzaro</span>
+          </motion.div>
+
+          {/* Headline */}
           <motion.h1
-            variants={fadeUp}
+            variants={fadeUp(0.25)}
             initial="hidden"
             animate="visible"
-            custom={0.4}
-            className="font-display text-display-xl text-hornets-white uppercase mb-4 leading-none"
+            className="font-display font-black text-display-xl text-hornets-ink tracking-tight text-balance mb-6"
           >
-            Disciplina.
-            <br />
-            <span className="text-gradient">Forza.</span>
-            <br />
-            Rispetto.
+            Il Taekwondo che{' '}
+            <span className="relative inline-block">
+              <span className="text-gradient">trasforma</span>
+              <motion.svg
+                viewBox="0 0 300 12"
+                className="absolute -bottom-2 left-0 w-full"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+              >
+                <motion.path
+                  d="M 0 6 Q 75 0 150 6 Q 225 12 300 6"
+                  fill="none"
+                  stroke="#F5A623"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              </motion.svg>
+            </span>
+            {' '}la tua vita
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p
-            variants={fadeUp}
+            variants={fadeUp(0.4)}
             initial="hidden"
             animate="visible"
-            custom={0.65}
-            className="text-white/60 text-lg lg:text-xl max-w-xl mb-10 text-balance"
+            className="text-hornets-ink-muted text-lg lg:text-xl max-w-2xl mx-auto mb-10 text-balance leading-relaxed"
           >
-            Il Taekwondo non è solo uno sport. È uno stile di vita.
-            Unisciti agli Hornets e scopri il tuo potenziale.
+            Corsi per bambini, adulti e agonisti. Più di 15 anni di storia,
+            oltre 200 atleti e 50 medaglie. Scopri la disciplina degli Hornets.
           </motion.p>
 
           {/* CTAs */}
           <motion.div
-            variants={fadeUp}
+            variants={fadeUp(0.55)}
             initial="hidden"
             animate="visible"
-            custom={0.85}
-            className="flex flex-col sm:flex-row items-center lg:items-start gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16"
           >
-            <Link href="/#contatti" className="btn-primary animate-pulse-yellow">
+            <Link href="/#contatti" className="btn-yellow gap-2 text-base px-8 py-4">
               Prenota Prova Gratuita
+              <ArrowRight size={18} />
             </Link>
-            <Link href="/#corsi" className="btn-outline">
-              Scopri i Corsi
+            <Link href="/#corsi" className="btn-outline text-base px-8 py-4">
+              Scopri i corsi
             </Link>
           </motion.div>
 
-          {/* Stats strip */}
+          {/* Stats pills */}
           <motion.div
-            variants={fadeUp}
+            variants={fadeUp(0.7)}
             initial="hidden"
             animate="visible"
-            custom={1.1}
-            className="flex flex-wrap justify-center lg:justify-start gap-8 mt-16 pt-8 border-t border-white/10"
+            className="flex flex-wrap items-center justify-center gap-3"
           >
             {[
-              { value: '15+', label: 'Anni di attività' },
-              { value: '200+', label: 'Atleti attivi' },
-              { value: '50+', label: 'Medaglie vinte' },
+              { value: '15+', label: 'anni di storia' },
+              { value: '200+', label: 'atleti attivi' },
+              { value: '50+', label: 'medaglie vinte' },
+              { value: '4', label: 'maestri certificati' },
             ].map(({ value, label }) => (
-              <div key={label} className="text-center lg:text-left">
-                <p className="font-display text-3xl text-hornets-yellow uppercase">{value}</p>
-                <p className="text-white/40 text-xs uppercase tracking-widest mt-1">{label}</p>
+              <div key={label} className="flex items-center gap-2.5 bg-white border border-hornets-border rounded-full px-5 py-2.5 shadow-soft">
+                <span className="font-display font-bold text-hornets-yellow text-lg leading-none">{value}</span>
+                <span className="text-hornets-ink-muted text-sm">{label}</span>
               </div>
             ))}
           </motion.div>
         </div>
+
+        {/* Floating cards decorativi */}
+        <motion.div
+          initial={{ opacity: 0, x: 60, rotate: 3 }}
+          animate={{ opacity: 1, x: 0, rotate: 3 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="hidden xl:block absolute right-12 top-1/2 -translate-y-1/2 w-52 card p-5 shadow-medium"
+        >
+          <div className="w-10 h-10 bg-hornets-yellow-pale rounded-2xl flex items-center justify-center mb-3">
+            <span className="text-2xl">🥋</span>
+          </div>
+          <p className="font-display font-bold text-hornets-ink text-sm mb-1">Prossima lezione</p>
+          <p className="text-hornets-ink-muted text-xs">Oggi ore 17:00</p>
+          <p className="text-hornets-ink-muted text-xs">Taekwondo Bambini</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: -60, rotate: -2 }}
+          animate={{ opacity: 1, x: 0, rotate: -2 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+          className="hidden xl:block absolute left-12 top-1/2 translate-y-8 w-48 card p-5 shadow-medium"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex -space-x-2">
+              {['#F5A623', '#0F0F1A', '#E08C00'].map((c, i) => (
+                <div key={i} className="w-7 h-7 rounded-full border-2 border-white" style={{ backgroundColor: c }} />
+              ))}
+            </div>
+            <span className="text-xs text-hornets-ink-muted font-medium">+197</span>
+          </div>
+          <p className="font-semibold text-hornets-ink text-sm">Atleti attivi</p>
+          <p className="text-hornets-yellow text-xs font-medium mt-0.5">↑ 12% questo mese</p>
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        transition={{ delay: 1.4 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-white/30 text-xs uppercase tracking-widest">Scorri</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-        >
-          <ChevronDown size={20} className="text-hornets-yellow" />
+        <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6 }}>
+          <ChevronDown size={20} className="text-hornets-ink-muted" />
         </motion.div>
       </motion.div>
     </section>

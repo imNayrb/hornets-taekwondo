@@ -3,215 +3,124 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
-import { Clock, Users, ChevronRight, Star, Shield, Trophy, Medal } from 'lucide-react';
-
-const iconMap: Record<string, React.ElementType> = {
-  star: Star,
-  shield: Shield,
-  trophy: Trophy,
-  medal: Medal,
-};
+import { Clock, Users, ArrowRight } from 'lucide-react';
 
 const corsi = [
   {
-    id: 1,
-    nome: 'Taekwondo Bambini',
-    livello: 'bambini',
-    etaRange: '4 - 11 anni',
-    orari: 'Lun / Mer 17:00 - 18:00',
-    descrizione: 'Coordinazione, disciplina e divertimento attraverso il Taekwondo. Il percorso ideale per avvicinarsi alle arti marziali con il sorriso.',
-    prezzoMensile: 45,
-    icona: 'star',
-    coloreTema: '#F5A623',
-    badge: 'Più richiesto',
+    id: 1, nome: 'Bambini', eta: '4 – 11 anni', orari: 'Lun / Mer  17:00 – 18:00',
+    desc: 'Coordinazione, disciplina e divertimento. Il primo passo nel mondo del Taekwondo in totale sicurezza.',
+    prezzo: 45, emoji: '🌟', bg: '#FFF8EC', accent: '#F5A623', badge: 'Più richiesto',
   },
   {
-    id: 2,
-    nome: 'Taekwondo Ragazzi',
-    livello: 'ragazzi',
-    etaRange: '12 - 17 anni',
-    orari: 'Mar / Gio 17:30 - 19:00',
-    descrizione: 'Tecnica avanzata e mentalità agonistica. I ragazzi affinano le basi e si preparano a competere.',
-    prezzoMensile: 50,
-    icona: 'shield',
-    coloreTema: '#D0021B',
-    badge: null,
+    id: 2, nome: 'Ragazzi', eta: '12 – 17 anni', orari: 'Mar / Gio  17:30 – 19:00',
+    desc: 'Tecnica avanzata e mentalità agonistica per chi vuole fare sul serio.',
+    prezzo: 50, emoji: '⚡', bg: '#F0F2F5', accent: '#0F0F1A', badge: null,
   },
   {
-    id: 3,
-    nome: 'Taekwondo Adulti',
-    livello: 'adulti',
-    etaRange: '18+ anni',
-    orari: 'Mar / Gio 19:00 - 20:30',
-    descrizione: 'Fitness, autodifesa e crescita personale. Non è mai troppo tardi per iniziare: il Taekwondo è per tutti.',
-    prezzoMensile: 55,
-    icona: 'trophy',
-    coloreTema: '#F9F9F9',
-    badge: null,
+    id: 3, nome: 'Adulti', eta: '18+ anni', orari: 'Mar / Gio  19:00 – 20:30',
+    desc: 'Fitness, autodifesa e crescita personale. Non è mai troppo tardi per iniziare.',
+    prezzo: 55, emoji: '💪', bg: '#F7F8FA', accent: '#0F0F1A', badge: null,
   },
   {
-    id: 4,
-    nome: 'Agonismo & Competizione',
-    livello: 'agonisti',
-    etaRange: '14 - 35 anni',
-    orari: 'Lun / Mer 20:30 + Sab 10:00',
-    descrizione: 'Preparazione atletica d\'élite per chi vuole conquistare i podi regionali e nazionali. Allenamenti intensivi e programmazione avanzata.',
-    prezzoMensile: 70,
-    icona: 'medal',
-    coloreTema: '#F5A623',
-    badge: 'Alta intensità',
+    id: 4, nome: 'Agonisti', eta: '14 – 35 anni', orari: 'Lun / Mer  20:30 + Sab 10:00',
+    desc: 'Preparazione élite per atleti che vogliono conquistare podi regionali e nazionali.',
+    prezzo: 70, emoji: '🏆', bg: '#FFF8EC', accent: '#F5A623', badge: 'Alta intensità',
   },
 ];
 
-function CorsoCard({ corso, index }: { corso: typeof corsi[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
-  const Icon = iconMap[corso.icona] || Star;
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
-      className="group card-dark relative overflow-hidden"
-    >
-      {/* Accent top bar */}
-      <div
-        className="absolute top-0 left-0 right-0 h-1 transition-all duration-300 group-hover:h-1.5"
-        style={{ backgroundColor: corso.coloreTema }}
-      />
-
-      {/* Badge */}
-      {corso.badge && (
-        <div
-          className="absolute top-4 right-4 text-hornets-black text-xs font-bold uppercase tracking-widest px-3 py-1"
-          style={{ backgroundColor: corso.coloreTema }}
-        >
-          {corso.badge}
-        </div>
-      )}
-
-      <div className="p-8 pt-10">
-        {/* Icon */}
-        <div
-          className="w-12 h-12 flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110"
-          style={{ color: corso.coloreTema }}
-        >
-          <Icon size={28} />
-        </div>
-
-        {/* Level label */}
-        <p className="text-xs uppercase tracking-[0.3em] font-bold mb-3" style={{ color: corso.coloreTema }}>
-          {corso.livello}
-        </p>
-
-        <h3 className="font-display text-2xl text-hornets-white uppercase mb-4 leading-tight">
-          {corso.nome}
-        </h3>
-
-        <p className="text-white/50 text-sm leading-relaxed mb-6">
-          {corso.descrizione}
-        </p>
-
-        {/* Meta info */}
-        <div className="flex flex-col gap-2 mb-6 pb-6 border-b border-white/5">
-          <div className="flex items-center gap-2 text-white/40 text-sm">
-            <Users size={14} className="shrink-0" style={{ color: corso.coloreTema }} />
-            <span>Età: {corso.etaRange}</span>
-          </div>
-          <div className="flex items-center gap-2 text-white/40 text-sm">
-            <Clock size={14} className="shrink-0" style={{ color: corso.coloreTema }} />
-            <span>{corso.orari}</span>
-          </div>
-        </div>
-
-        {/* Prezzo + CTA */}
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-white/30 text-xs uppercase tracking-widest block">A partire da</span>
-            <span className="font-display text-2xl" style={{ color: corso.coloreTema }}>
-              €{corso.prezzoMensile}
-              <span className="text-sm text-white/40 font-sans normal-case tracking-normal">/mese</span>
-            </span>
-          </div>
-          <Link
-            href="/#contatti"
-            className="flex items-center gap-1 text-sm font-medium uppercase tracking-widest transition-all duration-200"
-            style={{ color: corso.coloreTema }}
-          >
-            Info
-            <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export function CorsiSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="corsi" className="py-24 lg:py-32 bg-hornets-black">
+    <section id="corsi" className="py-24 lg:py-32 bg-white">
       <div className="section-container">
-        {/* Header */}
-        <div ref={ref} className="max-w-2xl mb-16">
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="section-label mb-4"
-          >
-            I Nostri Corsi
-          </motion.p>
+        <div ref={ref} className="text-center mb-16">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="flex justify-center mb-4">
+            <span className="section-label">I Nostri Corsi</span>
+          </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="section-title mb-6"
+            transition={{ delay: 0.1 }}
+            className="section-title mb-4"
           >
-            Un percorso per
-            <br />
+            Un percorso per{' '}
             <span className="text-gradient">ogni atleta</span>
           </motion.h2>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={inView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="divider-yellow mb-6 origin-left"
-          />
           <motion.p
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-white/50 text-lg"
+            transition={{ delay: 0.2 }}
+            className="text-hornets-ink-muted text-lg max-w-xl mx-auto"
           >
-            Dai bambini ai professionisti: ogni corso è progettato con cura dai nostri maestri per
-            garantire progressione, sicurezza e passione.
+            Ogni corso è progettato dai nostri maestri per garantire progressione, sicurezza e passione.
           </motion.p>
         </div>
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           {corsi.map((corso, i) => (
-            <CorsoCard key={corso.id} corso={corso} index={i} />
+            <motion.div
+              key={corso.id}
+              initial={{ opacity: 0, y: 32 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.1 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="group card p-7 flex flex-col"
+            >
+              {corso.badge && (
+                <span className="self-start mb-4 bg-hornets-yellow text-hornets-ink text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                  {corso.badge}
+                </span>
+              )}
+
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: corso.bg }}>
+                {corso.emoji}
+              </div>
+
+              <h3 className="font-display font-bold text-2xl text-hornets-ink mb-1">{corso.nome}</h3>
+              <p className="text-xs font-medium text-hornets-ink-muted uppercase tracking-widest mb-3" style={{ color: corso.accent }}>
+                Taekwondo {corso.nome}
+              </p>
+              <p className="text-hornets-ink-muted text-sm leading-relaxed mb-5 flex-1">{corso.desc}</p>
+
+              <div className="space-y-2 mb-6 pb-5 border-b border-hornets-border">
+                <div className="flex items-center gap-2 text-xs text-hornets-ink-muted">
+                  <Users size={13} style={{ color: corso.accent }} />
+                  <span>{corso.eta}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-hornets-ink-muted">
+                  <Clock size={13} style={{ color: corso.accent }} />
+                  <span>{corso.orari}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-hornets-ink-muted">Da </span>
+                  <span className="font-display font-bold text-xl text-hornets-ink">€{corso.prezzo}</span>
+                  <span className="text-xs text-hornets-ink-muted">/mese</span>
+                </div>
+                <Link
+                  href="/#contatti"
+                  className="flex items-center gap-1 text-xs font-semibold transition-all duration-200 hover:gap-2"
+                  style={{ color: corso.accent }}
+                >
+                  Info <ArrowRight size={13} />
+                </Link>
+              </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* Bottom CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="text-center mt-16"
+          transition={{ delay: 0.6 }}
+          className="text-center mt-14"
         >
-          <p className="text-white/40 text-sm mb-4">
-            Non sai quale corso fa per te? Prova gratuitamente!
-          </p>
-          <Link href="/#contatti" className="btn-primary">
-            Prenota la tua Prova Gratuita
+          <p className="text-hornets-ink-muted text-sm mb-4">Non sai quale corso fa per te?</p>
+          <Link href="/#contatti" className="btn-yellow">
+            Prenota una prova gratuita <ArrowRight size={16} />
           </Link>
         </motion.div>
       </div>

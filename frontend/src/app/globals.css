@@ -2,145 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Custom properties ───────────────────────────────────────── */
-:root {
-  --yellow: #F5A623;
-  --yellow-glow: rgba(245, 166, 35, 0.4);
-  --black: #0A0A0A;
-  --black-soft: #1A1A1A;
-}
-
-/* ── Base ────────────────────────────────────────────────────── */
 @layer base {
-  * {
-    box-sizing: border-box;
+  :root {
+    --yellow: #F5A623;
+    --ink: #0D0D0D;
+    --bg: #F7F8FA;
+    --surface: #FFFFFF;
+    --border: #E8EAF0;
+    --radius-card: 1.5rem;
   }
+
+  * { box-sizing: border-box; }
 
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background-color: #0A0A0A;
-    color: #F9F9F9;
+    background-color: #F7F8FA;
+    color: #0D0D0D;
     overflow-x: hidden;
   }
 
   ::selection {
     background-color: #F5A623;
-    color: #0A0A0A;
+    color: #0D0D0D;
   }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0A0A0A;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #F5A623;
-    border-radius: 3px;
-  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #F7F8FA; }
+  ::-webkit-scrollbar-thumb { background: #F5A623; border-radius: 99px; }
 }
 
-/* ── Components ─────────────────────────────────────────────── */
 @layer components {
-  /* Buttons */
+
+  /* ── Buttons ───────────────────────────────── */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
-           bg-hornets-yellow text-hornets-black
-           font-bold px-8 py-4 rounded-none
-           uppercase tracking-widest text-sm
+           bg-hornets-ink text-white
+           font-semibold px-7 py-3.5 rounded-full text-sm
            transition-all duration-300
-           hover:bg-hornets-yellow-dark hover:shadow-yellow-glow
-           focus:outline-none focus:ring-2 focus:ring-hornets-yellow focus:ring-offset-2 focus:ring-offset-hornets-black
-           active:scale-95;
+           hover:bg-hornets-dark hover:shadow-large hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-hornets-ink focus:ring-offset-2
+           active:scale-95 active:translate-y-0;
+  }
+
+  .btn-yellow {
+    @apply inline-flex items-center justify-center gap-2
+           bg-hornets-yellow text-hornets-ink
+           font-semibold px-7 py-3.5 rounded-full text-sm
+           transition-all duration-300
+           hover:bg-hornets-yellow-dark hover:shadow-yellow hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-hornets-yellow focus:ring-offset-2
+           active:scale-95 active:translate-y-0;
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           border-2 border-hornets-yellow text-hornets-yellow
-           font-bold px-8 py-4 rounded-none
-           uppercase tracking-widest text-sm
+           border border-hornets-border bg-white text-hornets-ink
+           font-semibold px-7 py-3.5 rounded-full text-sm
            transition-all duration-300
-           hover:bg-hornets-yellow hover:text-hornets-black hover:shadow-yellow-glow
-           focus:outline-none focus:ring-2 focus:ring-hornets-yellow focus:ring-offset-2 focus:ring-offset-hornets-black
+           hover:border-hornets-ink hover:shadow-soft hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-hornets-ink focus:ring-offset-2
            active:scale-95;
   }
 
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2
-           text-hornets-white/70 font-medium px-4 py-2
-           transition-colors duration-200
-           hover:text-hornets-yellow
-           focus:outline-none;
-  }
-
-  /* Section layouts */
+  /* ── Layout ────────────────────────────────── */
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .section-title {
-    @apply font-display text-display-md text-hornets-white uppercase tracking-tight;
+    @apply font-display font-bold text-display-md text-hornets-ink tracking-tight;
   }
 
   .section-label {
-    @apply text-hornets-yellow uppercase tracking-[0.3em] text-xs font-bold;
+    @apply inline-flex items-center gap-2
+           bg-hornets-yellow-pale text-hornets-yellow-dark
+           text-xs font-bold uppercase tracking-widest
+           px-4 py-1.5 rounded-full;
   }
 
-  /* Cards */
+  /* ── Cards ─────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-3xl shadow-soft
+           border border-hornets-border
+           transition-all duration-300
+           hover:shadow-medium hover:-translate-y-1;
+  }
+
+  .card-yellow {
+    @apply bg-hornets-yellow rounded-3xl
+           transition-all duration-300
+           hover:shadow-yellow hover:-translate-y-1;
+  }
+
   .card-dark {
-    @apply bg-hornets-black-card border border-white/5 rounded-none
-           shadow-card transition-all duration-300
-           hover:border-hornets-yellow/20 hover:shadow-card-hover;
+    @apply bg-hornets-dark-card rounded-3xl
+           transition-all duration-300
+           hover:shadow-large hover:-translate-y-1;
   }
 
-  /* Divider accent */
-  .divider-yellow {
-    @apply w-16 h-0.5 bg-hornets-yellow;
+  /* ── Inputs ─────────────────────────────────── */
+  .input {
+    @apply w-full bg-hornets-surface-2 border border-hornets-border
+           text-hornets-ink px-4 py-3.5 rounded-2xl text-sm
+           placeholder-hornets-ink-muted
+           focus:outline-none focus:border-hornets-yellow focus:ring-2 focus:ring-hornets-yellow/20
+           transition-all duration-200;
   }
 
-  /* Gradient overlay */
-  .overlay-dark {
-    @apply absolute inset-0 bg-gradient-to-b from-hornets-black/20 via-hornets-black/50 to-hornets-black;
+  /* ── Pill tag ───────────────────────────────── */
+  .tag {
+    @apply inline-flex items-center gap-1.5
+           bg-hornets-surface-2 text-hornets-ink-soft
+           text-xs font-medium px-3 py-1 rounded-full
+           border border-hornets-border;
   }
 
-  /* Text gradient */
-  .text-gradient {
-    @apply bg-gradient-to-r from-hornets-yellow to-hornets-yellow-light bg-clip-text text-transparent;
+  /* ── Divider ────────────────────────────────── */
+  .divider {
+    @apply w-12 h-1 bg-hornets-yellow rounded-full;
   }
 
-  /* Input */
-  .input-dark {
-    @apply w-full bg-hornets-gray border border-white/10 text-hornets-white
-           px-4 py-3 placeholder-white/30
-           focus:outline-none focus:border-hornets-yellow focus:ring-1 focus:ring-hornets-yellow
-           transition-colors duration-200
-           rounded-none;
+  /* ── Glass card ─────────────────────────────── */
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl;
   }
 }
 
-/* ── Utilities ──────────────────────────────────────────────── */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .text-balance { text-wrap: balance; }
+  .text-gradient {
+    @apply bg-gradient-to-r from-hornets-yellow to-hornets-yellow-dark bg-clip-text text-transparent;
   }
-
-  .animation-delay-200 { animation-delay: 200ms; }
-  .animation-delay-400 { animation-delay: 400ms; }
-  .animation-delay-600 { animation-delay: 600ms; }
-  .animation-delay-800 { animation-delay: 800ms; }
-
-  /* Video background */
-  .video-overlay {
-    background: linear-gradient(
-      to bottom,
-      rgba(10, 10, 10, 0.3) 0%,
-      rgba(10, 10, 10, 0.6) 50%,
-      rgba(10, 10, 10, 1) 100%
-    );
-  }
+  .bg-mesh { background-image: var(--tw-bg-mesh); }
 }
