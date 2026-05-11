@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
 
-// LOCAL_IP is injected by docker-compose.dev.yml at runtime so the dev server
-// accepts image optimisation requests and sets a permissive CSP for LAN IPs.
+// LOCAL_IP is injected at runtime so the dev server accepts image optimisation
+// requests and sets a permissive CSP for LAN IPs.
+// LOCAL_API_PORT defaults to 4000 (direct) or can be omitted when behind nginx.
 const localIp = process.env.LOCAL_IP;
+const localApiPort = process.env.LOCAL_API_PORT || '4000';
 
 const nextConfig = {
   images: {
@@ -15,11 +17,14 @@ const nextConfig = {
   },
   async headers() {
     const localOrigin = localIp ? `http://${localIp}` : null;
+    // When running directly (no nginx) the API is on a separate port.
+    const localApiOrigin = localIp ? `http://${localIp}:${localApiPort}` : null;
 
     const connectSrc = [
       "'self'",
       'http://localhost:4000',
       ...(localOrigin ? [localOrigin] : []),
+      ...(localApiOrigin && localApiOrigin !== localOrigin ? [localApiOrigin] : []),
     ].join(' ');
 
     const imgSrc = [
@@ -28,6 +33,7 @@ const nextConfig = {
       'blob:',
       'http://localhost:4000',
       ...(localOrigin ? [localOrigin] : []),
+      ...(localApiOrigin && localApiOrigin !== localOrigin ? [localApiOrigin] : []),
     ].join(' ');
 
     return [
