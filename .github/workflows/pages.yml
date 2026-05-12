@@ -2,7 +2,7 @@ name: Deploy — GitHub Pages (demo mobile)
 
 on:
   push:
-    branches: [claude/enable-mobile-testing-HOZMZ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -44,8 +44,6 @@ jobs:
         env:
           NEXT_EXPORT: 'true'
           NEXT_BASE_PATH: /hornets-taekwondo
-          # API not available in the static demo; dynamic sections show a
-          # loading skeleton but the full layout and design are visible.
           NEXT_PUBLIC_API_URL: ''
 
       - name: Upload Pages artifact
