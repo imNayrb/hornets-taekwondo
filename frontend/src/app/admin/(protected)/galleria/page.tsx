@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Upload, Trash2, Grid, List, Loader2 } from 'lucide-react';
+import { Upload, Trash2, Grid, List, Loader2, ImageIcon } from 'lucide-react';
 import { apiClient } from '@/lib/api.client';
 
 interface MediaItem {
@@ -34,12 +34,10 @@ export default function AdminGalleriaPage() {
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-
     setUploading(true);
     const formData = new FormData();
     Array.from(files).forEach((file) => formData.append('files', file));
     formData.append('categoria', 'generale');
-
     try {
       await apiClient.post('/galleria/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -64,79 +62,76 @@ export default function AdminGalleriaPage() {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-6xl">
+      <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl text-hornets-white uppercase">Galleria</h1>
-          <p className="text-white/40 text-sm mt-1">{items.length} media caricati</p>
+          <h1 className="font-display font-bold text-white text-2xl">Galleria</h1>
+          <p className="text-white/30 text-sm mt-1">{items.length} file caricati</p>
         </div>
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* View toggle */}
-          <div className="flex border border-white/10">
+          <div className="flex bg-white/[0.04] border border-white/[0.06] rounded-xl p-1">
             <button
               onClick={() => setView('grid')}
-              className={`p-2 ${view === 'grid' ? 'bg-hornets-yellow text-hornets-black' : 'text-white/40 hover:text-white/70'}`}
+              className={`p-1.5 rounded-lg transition-all ${view === 'grid' ? 'bg-hornets-yellow text-hornets-ink' : 'text-white/30 hover:text-white/60'}`}
             >
-              <Grid size={16} />
+              <Grid size={15} />
             </button>
             <button
               onClick={() => setView('list')}
-              className={`p-2 ${view === 'list' ? 'bg-hornets-yellow text-hornets-black' : 'text-white/40 hover:text-white/70'}`}
+              className={`p-1.5 rounded-lg transition-all ${view === 'list' ? 'bg-hornets-yellow text-hornets-ink' : 'text-white/30 hover:text-white/60'}`}
             >
-              <List size={16} />
+              <List size={15} />
             </button>
           </div>
-
-          {/* Upload */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/*,video/*"
-            className="hidden"
-            onChange={handleUpload}
-          />
+          <input ref={fileInputRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleUpload} />
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="btn-primary text-xs px-6 py-3 flex items-center gap-2"
+            className="flex items-center gap-2 bg-hornets-yellow text-hornets-ink font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-hornets-yellow-dark transition-all disabled:opacity-50"
           >
             {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-            {uploading ? 'Caricamento...' : 'Carica Media'}
+            {uploading ? 'Caricamento...' : 'Carica'}
           </button>
         </div>
       </div>
 
-      {/* Upload drop zone */}
+      {/* Drop zone */}
       <div
-        className="border-2 border-dashed border-white/10 hover:border-hornets-yellow/30 transition-colors p-8 text-center mb-8 cursor-pointer"
+        className="border-2 border-dashed border-white/[0.08] hover:border-hornets-yellow/30 rounded-2xl transition-colors p-8 text-center mb-6 cursor-pointer group"
         onClick={() => fileInputRef.current?.click()}
       >
-        <Upload size={24} className="text-white/20 mx-auto mb-2" />
-        <p className="text-white/30 text-sm">Trascina file qui o clicca per selezionare</p>
-        <p className="text-white/20 text-xs mt-1">JPG, PNG, WebP, MP4 — Max 10MB per file</p>
+        <div className="w-10 h-10 bg-white/[0.04] rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-hornets-yellow/10 transition-colors">
+          <Upload size={18} className="text-white/25 group-hover:text-hornets-yellow transition-colors" />
+        </div>
+        <p className="text-white/30 text-sm">Trascina i file qui o clicca per selezionare</p>
+        <p className="text-white/15 text-xs mt-1">JPG, PNG, WebP, MP4 · Max 10 MB per file</p>
       </div>
 
-      {/* Grid */}
+      {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 size={32} className="text-hornets-yellow animate-spin" />
+          <Loader2 size={28} className="text-hornets-yellow animate-spin" />
+        </div>
+      ) : items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-white/15">
+          <ImageIcon size={40} className="mb-3" />
+          <p className="text-sm">Nessun media caricato</p>
         </div>
       ) : (
         <div className={view === 'grid'
-          ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3'
+          ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3'
           : 'space-y-2'
         }>
           {items.map((item, i) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.03 }}
+              transition={{ delay: i * 0.025 }}
               className={view === 'grid'
-                ? 'relative aspect-square bg-hornets-gray group overflow-hidden'
-                : 'flex items-center gap-4 bg-hornets-black-card border border-white/5 p-3'
+                ? 'relative aspect-square bg-hornets-gray rounded-xl group overflow-hidden'
+                : 'flex items-center gap-4 bg-hornets-black-card border border-white/[0.06] rounded-xl p-3'
               }
             >
               {view === 'grid' ? (
@@ -148,34 +143,32 @@ export default function AdminGalleriaPage() {
                     className="object-cover"
                     sizes="(max-width: 768px) 50vw, 20vw"
                   />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2 bg-red-500 text-white hover:bg-red-600 transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                  <div className="absolute top-1 left-1">
-                    <span className="bg-hornets-yellow text-hornets-black text-[10px] font-bold px-1.5 py-0.5 uppercase">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2">
+                    <span className="text-[10px] font-bold bg-hornets-yellow text-hornets-ink px-1.5 py-0.5 rounded-md uppercase">
                       {item.tipo}
                     </span>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="p-1.5 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-colors"
+                    >
+                      <Trash2 size={13} />
+                    </button>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="relative w-16 h-12 shrink-0 bg-hornets-gray overflow-hidden">
-                    <Image src={item.url} alt={item.titolo || 'Media'} fill className="object-cover" sizes="64px" />
+                  <div className="relative w-14 h-10 shrink-0 bg-hornets-gray rounded-lg overflow-hidden">
+                    <Image src={item.url} alt={item.titolo || 'Media'} fill className="object-cover" sizes="56px" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-hornets-white text-sm font-medium truncate">{item.titolo || 'Senza titolo'}</p>
+                    <p className="text-white text-sm font-medium truncate">{item.titolo || 'Senza titolo'}</p>
                     <p className="text-white/30 text-xs">{item.categoria || '—'} · {item.tipo}</p>
                   </div>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 text-white/20 hover:text-red-400 transition-colors shrink-0"
+                    className="p-2 text-white/20 hover:text-red-400 transition-colors"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 </>
               )}

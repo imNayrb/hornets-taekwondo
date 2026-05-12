@@ -29,6 +29,13 @@ const config: Config = {
           // Accento dark per contrasto
           dark:         '#0F0F1A',
           'dark-card':  '#1A1A2E',
+          // Admin backoffice dark theme
+          black:        '#08080F',
+          'black-card': '#0F0F1C',
+          'black-hover':'#151525',
+          white:        '#FFFFFF',
+          gray:         '#1A1A2C',
+          'gray-border':'rgba(255,255,255,0.06)',
         },
       },
       fontFamily: {

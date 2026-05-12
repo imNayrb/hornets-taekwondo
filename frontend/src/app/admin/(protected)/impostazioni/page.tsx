@@ -17,6 +17,15 @@ interface SiteConfig {
   facebook_url: string;
 }
 
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="bg-hornets-black-card border border-white/[0.06] rounded-2xl p-6">
+      <p className="admin-section-label mb-6">{title}</p>
+      {children}
+    </section>
+  );
+}
+
 export default function AdminImpostazioniPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -47,102 +56,86 @@ export default function AdminImpostazioniPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 size={32} className="text-hornets-yellow animate-spin" />
+        <Loader2 size={28} className="text-hornets-yellow animate-spin" />
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-3xl">
+      <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl text-hornets-white uppercase">Impostazioni Sito</h1>
-          <p className="text-white/40 text-sm mt-1">Modifica i contenuti del sito in tempo reale</p>
+          <h1 className="font-display font-bold text-white text-2xl">Impostazioni</h1>
+          <p className="text-white/30 text-sm mt-1">Modifica i contenuti del sito</p>
         </div>
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={saving}
-          className="btn-primary text-xs px-6 py-3 flex items-center gap-2"
+          className="flex items-center gap-2 bg-hornets-yellow text-hornets-ink font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-hornets-yellow-dark transition-all disabled:opacity-60"
         >
           {saving
-            ? <><Loader2 size={14} className="animate-spin" /> Salvataggio...</>
+            ? <><Loader2 size={14} className="animate-spin" /> Salvo...</>
             : saved
             ? <><CheckCircle size={14} /> Salvato!</>
-            : <><Save size={14} /> Salva modifiche</>
+            : <><Save size={14} /> Salva</>
           }
         </button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Hero */}
-        <section className="bg-hornets-black-card border border-white/5 p-6">
-          <h2 className="text-hornets-yellow text-xs uppercase tracking-[0.3em] font-bold mb-6">
-            Hero Section
-          </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Section title="Hero Section">
           <div className="space-y-4">
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Titolo principale</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Titolo principale</label>
               <input {...register('hero_titolo')} className="input-dark" />
             </div>
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Sottotitolo</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Sottotitolo</label>
               <input {...register('hero_sottotitolo')} className="input-dark" />
             </div>
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Testo bottone CTA</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Testo bottone CTA</label>
               <input {...register('hero_cta_text')} className="input-dark" />
             </div>
           </div>
-        </section>
+        </Section>
 
-        {/* Chi siamo */}
-        <section className="bg-hornets-black-card border border-white/5 p-6">
-          <h2 className="text-hornets-yellow text-xs uppercase tracking-[0.3em] font-bold mb-6">
-            Chi Siamo
-          </h2>
+        <Section title="Chi Siamo">
           <div>
-            <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Testo sezione</label>
+            <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Testo sezione</label>
             <textarea {...register('chi_siamo_testo')} rows={5} className="input-dark resize-y" />
           </div>
-        </section>
+        </Section>
 
-        {/* Contatti */}
-        <section className="bg-hornets-black-card border border-white/5 p-6">
-          <h2 className="text-hornets-yellow text-xs uppercase tracking-[0.3em] font-bold mb-6">
-            Informazioni di Contatto
-          </h2>
+        <Section title="Informazioni di Contatto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Indirizzo</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Indirizzo</label>
               <input {...register('indirizzo')} className="input-dark" />
             </div>
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Telefono</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Telefono</label>
               <input {...register('telefono')} className="input-dark" />
             </div>
-            <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">Email contatti</label>
+            <div className="md:col-span-2">
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">Email</label>
               <input {...register('email_contatti')} type="email" className="input-dark" />
             </div>
           </div>
-        </section>
+        </Section>
 
-        {/* Social */}
-        <section className="bg-hornets-black-card border border-white/5 p-6">
-          <h2 className="text-hornets-yellow text-xs uppercase tracking-[0.3em] font-bold mb-6">
-            Social Media
-          </h2>
+        <Section title="Social Media">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">URL Instagram</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">URL Instagram</label>
               <input {...register('instagram_url')} className="input-dark" />
             </div>
             <div>
-              <label className="block text-xs text-white/40 uppercase tracking-widest mb-2">URL Facebook</label>
+              <label className="block text-xs text-white/40 font-semibold uppercase tracking-widest mb-2">URL Facebook</label>
               <input {...register('facebook_url')} className="input-dark" />
             </div>
           </div>
-        </section>
+        </Section>
       </form>
     </div>
   );

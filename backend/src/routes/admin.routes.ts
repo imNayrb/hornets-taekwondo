@@ -120,6 +120,171 @@ adminRouter.get('/prenotazioni', async (_req: Request, res: Response, next: Next
   }
 });
 
+// ─── CORSI ──────────────────────────────────────────────────────────────────
+
+// GET /api/admin/corsi - Tutti i corsi (attivi + inattivi)
+adminRouter.get('/corsi', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const corsi = await prisma.corso.findMany({
+      orderBy: [{ ordine: 'asc' }, { nome: 'asc' }],
+    });
+    res.json(corsi);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/admin/corsi - Crea nuovo corso
+adminRouter.post('/corsi', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const corso = await prisma.corso.create({ data: req.body });
+    res.status(201).json(corso);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PUT /api/admin/corsi/:id - Aggiorna corso
+adminRouter.put('/corsi/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const corso = await prisma.corso.update({
+      where: { id: req.params.id },
+      data: req.body,
+    });
+    res.json(corso);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/admin/corsi/:id/toggle - Attiva/disattiva corso
+adminRouter.patch('/corsi/:id/toggle', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const current = await prisma.corso.findUniqueOrThrow({ where: { id: req.params.id } });
+    const corso = await prisma.corso.update({
+      where: { id: req.params.id },
+      data: { isActive: !current.isActive },
+    });
+    res.json(corso);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE /api/admin/corsi/:id - Elimina definitivamente corso
+adminRouter.delete('/corsi/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await prisma.corso.delete({ where: { id: req.params.id } });
+    res.json({ message: 'Corso eliminato' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ─── NEWS ───────────────────────────────────────────────────────────────────
+
+// GET /api/admin/news - Tutte le news (incluse non pubblicate)
+adminRouter.get('/news', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const limit = parseInt(req.query.limit as string || '50', 10);
+    const page = parseInt(req.query.page as string || '1', 10);
+
+    const [news, total] = await Promise.all([
+      prisma.news.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: (page - 1) * limit,
+        select: {
+          id: true, titolo: true, slug: true, estratto: true,
+          contenuto: true, tags: true,
+          isPublished: true, publishedAt: true,
+          createdAt: true, updatedAt: true,
+          autore: { select: { nome: true, cognome: true } },
+        },
+      }),
+      prisma.news.count(),
+    ]);
+
+    res.json({ news, total, page, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/admin/news - Crea nuovo articolo
+adminRouter.post('/news', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const slugify = require('slugify');
+    const baseSlug = slugify(req.body.titolo, { lower: true, strict: true, locale: 'it' });
+    // rendi lo slug unico aggiungendo timestamp se necessario
+    const existing = await prisma.news.findUnique({ where: { slug: baseSlug } });
+    const slug = existing ? `${baseSlug}-${Date.now()}` : baseSlug;
+
+    const news = await prisma.news.create({
+      data: {
+        titolo: req.body.titolo,
+        slug,
+        contenuto: req.body.contenuto,
+        estratto: req.body.estratto || null,
+        tags: req.body.tags || [],
+        isPublished: req.body.isPublished ?? false,
+        publishedAt: req.body.isPublished ? new Date() : null,
+        autoreId: req.user?.id || null,
+      },
+    });
+    res.status(201).json(news);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PUT /api/admin/news/:id - Modifica articolo
+adminRouter.put('/news/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const data: Record<string, unknown> = {
+      titolo: req.body.titolo,
+      contenuto: req.body.contenuto,
+      estratto: req.body.estratto || null,
+      tags: req.body.tags || [],
+      isPublished: req.body.isPublished ?? false,
+    };
+    if (req.body.isPublished === true) data.publishedAt = new Date();
+    if (req.body.isPublished === false) data.publishedAt = null;
+
+    const news = await prisma.news.update({ where: { id: req.params.id }, data });
+    res.json(news);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/admin/news/:id - Aggiorna campo (es. isPublished)
+adminRouter.patch('/news/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const data: Record<string, unknown> = { ...req.body };
+    if (req.body.isPublished === true) {
+      data.publishedAt = new Date();
+    } else if (req.body.isPublished === false) {
+      data.publishedAt = null;
+    }
+    const news = await prisma.news.update({ where: { id: req.params.id }, data });
+    res.json(news);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE /api/admin/news/:id
+adminRouter.delete('/news/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await prisma.news.delete({ where: { id: req.params.id } });
+    res.json({ message: 'News eliminata' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /api/admin/config - Configurazione sito
 adminRouter.get('/config', async (_req: Request, res: Response, next: NextFunction) => {
   try {
