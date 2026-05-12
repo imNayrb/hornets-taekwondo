@@ -43,7 +43,7 @@ export function ChiSiamoSection() {
             <div className="space-y-4 text-hornets-ink-muted text-base leading-relaxed mb-8">
               <p>
                 Gli <strong className="text-hornets-ink font-semibold">Hornets Taekwondo</strong> nascono a Catanzaro nel 2009
-                con un sogno: portare l'arte marziale coreana nel cuore della Calabria, forgiando campioni
+                con un sogno: portare l&apos;arte marziale coreana nel cuore della Calabria, forgiando campioni
                 non solo nello sport, ma nella vita.
               </p>
               <p>

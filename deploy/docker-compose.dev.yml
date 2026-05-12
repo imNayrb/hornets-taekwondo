@@ -1,0 +1,105 @@
+version: '3.9'
+
+services:
+  # ── PostgreSQL Database ─────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: hornets_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hornets_taekwondo
+      POSTGRES_USER: hornets
+      POSTGRES_PASSWORD: devpassword
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hornets -d hornets_taekwondo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hornets_dev_net
+
+  # ── Backend Express API ─────────────────────────────────────
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: hornets_backend_dev
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://hornets:devpassword@postgres:5432/hornets_taekwondo
+      JWT_SECRET: dev-jwt-secret-not-for-production-use-only-32ch
+      JWT_REFRESH_SECRET: dev-jwt-refresh-secret-not-for-production-32c
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      PORT: 4000
+      NODE_ENV: development
+      UPLOAD_DIR: /app/uploads
+      MAX_FILE_SIZE: 10485760
+      # Accept requests from the local-network IP (phone + desktop browser)
+      CORS_ORIGIN: http://${LOCAL_IP:-localhost}
+      ADMIN_EMAIL: admin@hornets-taekwondo.it
+      ADMIN_PASSWORD: DevAdmin!2024
+    volumes:
+      - uploads_dev_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hornets_dev_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Frontend Next.js ────────────────────────────────────────
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        # API goes through nginx on the same host, so /api resolves correctly
+        # on both desktop and phone without hardcoding a port.
+        NEXT_PUBLIC_API_URL: http://${LOCAL_IP:-localhost}/api
+    container_name: hornets_frontend_dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      # Passed at runtime so next.config.mjs can relax remotePatterns + CSP
+      LOCAL_IP: ${LOCAL_IP:-localhost}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hornets_dev_net
+
+  # ── Nginx Reverse Proxy (HTTP only, all interfaces) ─────────
+  nginx:
+    image: nginx:alpine
+    container_name: hornets_nginx_dev
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:80"
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - uploads_dev_data:/var/www/uploads:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - hornets_dev_net
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  uploads_dev_data:
+    driver: local
+
+networks:
+  hornets_dev_net:
+    driver: bridge
