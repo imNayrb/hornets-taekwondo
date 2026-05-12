@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Hornets Taekwondo – Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hy': '#F5A623',
+            'hy-dark': '#E08C00',
+            'hy-pale': '#FFF8EC',
+            'hi': '#0D0D0D',
+            'hi-s': '#3D3D3D',
+            'hi-m': '#6B7280',
+            'hbg': '#F7F8FA',
+            'hborder': '#E8EAF0',
+            'hdark': '#0F0F1A',
+            'adm': '#08080F',
+            'adm-c': '#0F0F1C',
+            'adm-h': '#151525',
+          },
+          fontFamily: {
+            sans: ['Inter','system-ui','sans-serif'],
+            display: ['Outfit','system-ui','sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+    body{font-family:'Inter',system-ui,sans-serif;background:#F7F8FA;color:#0D0D0D;overflow-x:hidden;}
+    ::selection{background:#F5A623;color:#0D0D0D;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-track{background:#F7F8FA;}
+    ::-webkit-scrollbar-thumb{background:#F5A623;border-radius:99px;}
+
+    .font-display{font-family:'Outfit',system-ui,sans-serif;}
+    .text-gradient{background:linear-gradient(135deg,#F5A623,#E08C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .underline-wave{position:relative;display:inline-block;}
+    .underline-wave::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:3px;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:99px;}
+
+    /* Buttons */
+    .btn-primary{display:inline-flex;align-items:center;gap:8px;background:#0D0D0D;color:#fff;font-weight:600;padding:14px 28px;border-radius:999px;font-size:14px;cursor:pointer;border:none;transition:all .25s;text-decoration:none;}
+    .btn-primary:hover{background:#0F0F1A;transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.18);}
+    .btn-yellow{display:inline-flex;align-items:center;gap:8px;background:#F5A623;color:#0D0D0D;font-weight:600;padding:14px 28px;border-radius:999px;font-size:14px;cursor:pointer;border:none;transition:all .25s;text-decoration:none;}
+    .btn-yellow:hover{background:#E08C00;transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,166,35,.4);}
+    .btn-outline{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0D0D0D;font-weight:600;padding:14px 28px;border-radius:999px;font-size:14px;cursor:pointer;border:1.5px solid #E8EAF0;transition:all .25s;text-decoration:none;}
+    .btn-outline:hover{border-color:#0D0D0D;transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08);}
+
+    /* Cards */
+    .card{background:#fff;border-radius:24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border:1px solid #E8EAF0;transition:all .3s;}
+    .card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-4px);}
+
+    /* Section label */
+    .section-label{display:inline-flex;align-items:center;gap:8px;background:#FFF8EC;color:#E08C00;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;padding:6px 16px;border-radius:999px;}
+
+    /* Demo mode bar */
+    #demo-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#0D0D0D;height:44px;display:flex;align-items:center;justify-between;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .demo-logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
+    .demo-logo span{color:#F5A623;}
+    .demo-mode-pills{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:999px;padding:3px;}
+    .demo-pill{font-size:12px;font-weight:600;padding:4px 14px;border-radius:999px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,.5);border:none;background:transparent;}
+    .demo-pill.active{background:#F5A623;color:#0D0D0D;}
+    .demo-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;background:rgba(245,166,35,.15);color:#F5A623;padding:3px 10px;border-radius:999px;}
+
+    /* Main content offset */
+    .main-offset{padding-top:44px;}
+
+    /* ═══════════════════════════════════════
+       PUBLIC SITE
+    ═══════════════════════════════════════ */
+
+    /* Navbar */
+    #pub-nav{position:sticky;top:44px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid #E8EAF0;transition:box-shadow .3s;}
+    .nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:20px;letter-spacing:-.02em;color:#0D0D0D;text-decoration:none;}
+    .nav-logo span{color:#F5A623;}
+    .nav-links{display:none;gap:32px;list-style:none;}
+    @media(min-width:768px){.nav-links{display:flex;}}
+    .nav-links a{font-size:14px;font-weight:500;color:#6B7280;text-decoration:none;transition:color .2s;}
+    .nav-links a:hover{color:#0D0D0D;}
+    .nav-cta{display:none;}
+    @media(min-width:768px){.nav-cta{display:inline-flex;}}
+    .hamburger{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;}
+    @media(min-width:768px){.hamburger{display:none;}}
+    .hamburger span{display:block;width:22px;height:2px;background:#0D0D0D;border-radius:2px;transition:all .3s;}
+    .mobile-menu{display:none;position:fixed;inset:44px 0 0;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);z-index:99;flex-direction:column;padding:24px 20px;gap:4px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-size:18px;font-weight:600;color:#0D0D0D;text-decoration:none;padding:14px 0;border-bottom:1px solid #E8EAF0;}
+
+    /* Hero */
+    #hero{min-height:calc(100svh - 108px);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#fff;}
+    .hero-mesh{position:absolute;inset:0;pointer-events:none;}
+    .hero-blob-1{position:absolute;top:-10%;right:-10%;width:600px;height:600px;border-radius:50%;background:rgba(245,166,35,.12);filter:blur(100px);}
+    .hero-blob-2{position:absolute;bottom:-10%;left:-10%;width:450px;height:450px;border-radius:50%;background:rgba(245,166,35,.08);filter:blur(90px);}
+    .hero-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(#0D0D0D 1px,transparent 1px),linear-gradient(90deg,#0D0D0D 1px,transparent 1px);background-size:60px 60px;}
+    .hero-content{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:60px 20px;text-align:center;}
+    .hero-title{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2.4rem,8vw,5.5rem);line-height:1.06;letter-spacing:-.03em;color:#0D0D0D;margin-bottom:24px;}
+    .hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:#6B7280;max-width:540px;margin:0 auto 40px;line-height:1.7;}
+    .hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#6B7280;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+    .scroll-arrow{width:28px;height:28px;border:1.5px solid #E8EAF0;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:bounceY 2s ease-in-out infinite;}
+    @keyframes bounceY{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+
+    /* Stats */
+    #stats{background:#F7F8FA;padding:48px 20px;}
+    .stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#E8EAF0;border-radius:24px;overflow:hidden;}
+    .stat-item{background:#fff;padding:32px 20px;text-align:center;}
+    .stat-num{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);color:#0D0D0D;line-height:1;}
+    .stat-num span{color:#F5A623;}
+    .stat-label{font-size:12px;color:#6B7280;font-weight:500;margin-top:6px;text-transform:uppercase;letter-spacing:.06em;}
+
+    /* Corsi */
+    #corsi{padding:80px 20px;background:#fff;}
+    .section-header{text-align:center;margin-bottom:56px;}
+    .section-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.025em;color:#0D0D0D;margin-bottom:12px;}
+    .section-sub{font-size:16px;color:#6B7280;max-width:480px;margin:0 auto;line-height:1.6;}
+    .corsi-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:16px;}
+    @media(min-width:640px){.corsi-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(min-width:1024px){.corsi-grid{grid-template-columns:repeat(4,1fr);}}
+    .corso-card{background:#fff;border-radius:24px;border:1px solid #E8EAF0;padding:28px;display:flex;flex-direction:column;transition:all .3s;cursor:default;}
+    .corso-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-4px);}
+    .corso-badge{display:inline-block;background:#F5A623;color:#0D0D0D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 12px;border-radius:999px;margin-bottom:16px;align-self:flex-start;}
+    .corso-emoji{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;}
+    .corso-nome{font-family:'Outfit',sans-serif;font-weight:700;font-size:22px;color:#0D0D0D;margin-bottom:4px;}
+    .corso-tipo{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+    .corso-desc{font-size:13px;color:#6B7280;line-height:1.6;margin-bottom:20px;flex:1;}
+    .corso-info{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid #E8EAF0;margin-bottom:16px;}
+    .corso-info-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#6B7280;}
+    .corso-footer{display:flex;align-items:center;justify-content:space-between;}
+    .corso-prezzo{font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;color:#0D0D0D;}
+    .corso-prezzo small{font-size:12px;color:#6B7280;font-family:'Inter',sans-serif;font-weight:400;}
+    .corso-link{font-size:12px;font-weight:600;color:#F5A623;text-decoration:none;display:flex;align-items:center;gap:4px;}
+
+    /* Chi Siamo */
+    #chi-siamo{padding:80px 20px;background:#F7F8FA;overflow:hidden;}
+    .chi-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
+    @media(min-width:1024px){.chi-grid{grid-template-columns:1fr 1fr;}}
+    .chi-values{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px;}
+    .chi-val{background:#fff;border-radius:16px;padding:20px 16px;text-align:center;border:1px solid #E8EAF0;}
+    .chi-val-icon{width:40px;height:40px;border-radius:12px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+    .chi-val-label{font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#0D0D0D;}
+    .chi-img{position:relative;}
+    .chi-img-main{width:100%;border-radius:32px;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,#0F0F1A 0%,#1A1A2E 50%,#2a1a0a 100%);display:flex;align-items:center;justify-content:center;}
+    .chi-img-badge{position:absolute;bottom:-20px;right:24px;background:#F5A623;border-radius:20px;padding:16px 20px;box-shadow:0 8px 28px rgba(245,166,35,.4);}
+    .chi-img-badge-num{font-family:'Outfit',sans-serif;font-weight:900;font-size:28px;color:#0D0D0D;line-height:1;}
+    .chi-img-badge-label{font-size:11px;font-weight:600;color:#0D0D0D;opacity:.7;}
+    .check-list{display:flex;flex-direction:column;gap:12px;margin:24px 0;}
+    .check-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#3D3D3D;}
+
+    /* Galleria */
+    #galleria{padding:80px 20px;background:#fff;}
+    .gallery-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+    @media(min-width:768px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
+    .gallery-item{border-radius:20px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;transition:all .3s;position:relative;}
+    .gallery-item:hover{transform:scale(1.02);box-shadow:0 8px 32px rgba(0,0,0,.15);}
+    .gallery-item:first-child{grid-column:span 2;}
+    @media(min-width:768px){.gallery-item:first-child{grid-column:span 1;}}
+    .gallery-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;}
+    .gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 60%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:16px;}
+    .gallery-item:hover .gallery-overlay{opacity:1;}
+    .gallery-overlay span{color:#fff;font-size:12px;font-weight:600;}
+
+    /* News */
+    #news{padding:80px 20px;background:#F7F8FA;}
+    .news-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:20px;}
+    @media(min-width:768px){.news-grid{grid-template-columns:repeat(3,1fr);}}
+    .news-card{background:#fff;border-radius:24px;border:1px solid #E8EAF0;overflow:hidden;transition:all .3s;cursor:pointer;}
+    .news-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-4px);}
+    .news-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;overflow:hidden;}
+    .news-body{padding:20px;}
+    .news-tag{display:inline-block;background:#FFF8EC;color:#E08C00;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:999px;margin-bottom:10px;}
+    .news-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;color:#0D0D0D;margin-bottom:8px;line-height:1.3;}
+    .news-excerpt{font-size:13px;color:#6B7280;line-height:1.6;margin-bottom:12px;}
+    .news-date{font-size:11px;color:#9CA3AF;}
+
+    /* Contatti */
+    #contatti{padding:80px 20px;background:linear-gradient(135deg,#0F0F1A 0%,#1a0f2e 100%);position:relative;overflow:hidden;}
+    .contatti-blob{position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:rgba(245,166,35,.08);filter:blur(80px);pointer-events:none;}
+    .contatti-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+    .contatti-grid{display:grid;grid-template-columns:1fr;gap:48px;}
+    @media(min-width:768px){.contatti-grid{grid-template-columns:1fr 1fr;}}
+    .contatti-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.8rem);color:#fff;letter-spacing:-.025em;margin-bottom:16px;}
+    .contatti-sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;}
+    .contatti-info{display:flex;flex-direction:column;gap:16px;}
+    .contatti-info-item{display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.7);font-size:14px;}
+    .contatti-info-icon{width:40px;height:40px;border-radius:12px;background:rgba(245,166,35,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+    .form-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;}
+    .form-input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:14px 16px;border-radius:14px;font-size:14px;font-family:'Inter',sans-serif;transition:all .2s;outline:none;width:100%;}
+    .form-input::placeholder{color:rgba(255,255,255,.25);}
+    .form-input:focus{border-color:rgba(245,166,35,.5);background:rgba(255,255,255,.08);box-shadow:0 0 0 3px rgba(245,166,35,.1);}
+    .form-textarea{resize:none;height:100px;}
+    .form-success{display:none;text-align:center;padding:24px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:16px;color:#F5A623;font-weight:600;}
+
+    /* Footer */
+    #footer{background:#0D0D0D;padding:40px 20px;text-align:center;}
+    .footer-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:22px;color:#fff;margin-bottom:8px;}
+    .footer-logo span{color:#F5A623;}
+    .footer-sub{font-size:13px;color:rgba(255,255,255,.3);margin-bottom:20px;}
+    .footer-links{display:flex;justify-content:center;gap:20px;margin-bottom:20px;}
+    .footer-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s;}
+    .footer-links a:hover{color:#F5A623;}
+    .footer-copy{font-size:12px;color:rgba(255,255,255,.2);}
+
+    /* ═══════════════════════════════════════
+       ADMIN PANEL
+    ═══════════════════════════════════════ */
+
+    #admin-view{display:none;min-height:calc(100svh - 44px);background:#08080F;}
+
+    /* Login */
+    #admin-login{display:flex;align-items:center;justify-content:center;min-height:calc(100svh - 44px);padding:20px;background:linear-gradient(135deg,#08080F 0%,#0f0a1a 100%);}
+    .login-card{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:28px;padding:clamp(28px,5vw,44px);width:100%;max-width:400px;}
+    .login-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:28px;color:#fff;text-align:center;margin-bottom:6px;}
+    .login-logo span{color:#F5A623;}
+    .login-sub{text-align:center;font-size:13px;color:rgba(255,255,255,.3);margin-bottom:32px;}
+    .login-hint{display:inline-flex;align-items:center;gap:6px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.15);border-radius:10px;padding:10px 14px;width:100%;margin-bottom:28px;font-size:12px;color:rgba(245,166,35,.8);}
+    .login-field{margin-bottom:16px;}
+    .login-label{display:block;font-size:11px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+    .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;padding:14px 16px;border-radius:14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all .2s;}
+    .login-input:focus{border-color:rgba(245,166,35,.4);background:rgba(255,255,255,.06);box-shadow:0 0 0 3px rgba(245,166,35,.08);}
+    .login-btn{width:100%;background:#F5A623;color:#0D0D0D;font-weight:700;padding:16px;border-radius:14px;border:none;font-size:15px;cursor:pointer;margin-top:8px;transition:all .25s;font-family:'Outfit',sans-serif;}
+    .login-btn:hover{background:#E08C00;transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,166,35,.4);}
+
+    /* Admin shell */
+    #admin-shell{display:none;min-height:calc(100svh - 44px);flex-direction:column;}
+
+    /* Admin top bar */
+    .adm-topbar{background:#0F0F1C;border-bottom:1px solid rgba(255,255,255,.06);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:44px;z-index:50;}
+    .adm-topbar-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:#fff;}
+    .adm-topbar-right{display:flex;align-items:center;gap:10px;}
+    .adm-notif{position:relative;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
+    .adm-notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#F5A623;border:2px solid #0F0F1C;}
+    .adm-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E08C00);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#0D0D0D;}
+
+    /* Admin content area */
+    .adm-content{flex:1;overflow-y:auto;padding:20px 16px 100px;}
+
+    /* Bottom nav */
+    .adm-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0F0F1C;border-top:1px solid rgba(255,255,255,.06);display:flex;z-index:50;padding-bottom:env(safe-area-inset-bottom);}
+    .adm-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;gap:4px;cursor:pointer;transition:all .2s;border:none;background:none;}
+    .adm-nav-icon{font-size:20px;transition:transform .2s;}
+    .adm-nav-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;transition:color .2s;}
+    .adm-nav-item.active .adm-nav-label{color:#F5A623;}
+    .adm-nav-item.active .adm-nav-icon{transform:scale(1.15);}
+
+    /* Stat cards */
+    .adm-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+    @media(min-width:480px){.adm-stats{grid-template-columns:repeat(4,1fr);}}
+    .adm-stat-card{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:18px 16px;}
+    .adm-stat-icon{font-size:20px;margin-bottom:10px;}
+    .adm-stat-num{font-family:'Outfit',sans-serif;font-weight:800;font-size:26px;color:#fff;line-height:1;}
+    .adm-stat-label{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px;font-weight:500;}
+    .adm-stat-delta{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;margin-top:6px;padding:2px 8px;border-radius:999px;}
+    .adm-stat-delta.up{background:rgba(34,197,94,.12);color:#4ade80;}
+    .adm-stat-delta.new{background:rgba(245,166,35,.12);color:#F5A623;}
+
+    /* Admin card */
+    .adm-card{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:18px;}
+    .adm-card-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+    .adm-card-title span{font-size:10px;font-weight:600;color:#F5A623;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;}
+
+    /* Table */
+    .adm-table{width:100%;border-collapse:collapse;}
+    .adm-table th{font-size:10px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;text-align:left;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);}
+    .adm-table td{font-size:13px;color:rgba(255,255,255,.75);padding:12px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+    .adm-table tr:last-child td{border-bottom:none;}
+    .adm-table tr:hover td{background:rgba(255,255,255,.02);}
+
+    /* Status pills */
+    .pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em;}
+    .pill-new{background:rgba(245,166,35,.12);color:#F5A623;}
+    .pill-ok{background:rgba(34,197,94,.12);color:#4ade80;}
+    .pill-no{background:rgba(239,68,68,.12);color:#f87171;}
+    .pill-read{background:rgba(99,102,241,.12);color:#a5b4fc;}
+    .pill-replied{background:rgba(34,197,94,.12);color:#4ade80;}
+
+    /* Action buttons */
+    .adm-action-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6);font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;cursor:pointer;transition:all .2s;}
+    .adm-action-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .adm-action-btn.danger:hover{background:rgba(239,68,68,.12);color:#f87171;border-color:rgba(239,68,68,.2);}
+
+    /* Add button */
+    .adm-add-btn{display:inline-flex;align-items:center;gap:6px;background:#F5A623;color:#0D0D0D;font-weight:700;font-size:13px;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;margin-bottom:16px;transition:all .25s;}
+    .adm-add-btn:hover{background:#E08C00;}
+
+    /* Empty pages */
+    .adm-page{display:none;}
+    .adm-page.active{display:block;}
+
+    /* Recent activity */
+    .activity-list{display:flex;flex-direction:column;gap:10px;}
+    .activity-item{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,.02);border-radius:12px;}
+    .activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .activity-text{font-size:13px;color:rgba(255,255,255,.65);flex:1;}
+    .activity-time{font-size:11px;color:rgba(255,255,255,.25);}
+
+    /* Toast */
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F0F1C;border:1px solid rgba(245,166,35,.3);color:#F5A623;font-size:13px;font-weight:600;padding:12px 20px;border-radius:14px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    /* Scrollable table wrapper */
+    .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .table-scroll table{min-width:480px;}
+
+    /* Animations */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .fade-up{animation:fadeUp .5s ease forwards;}
+    .fade-up-d1{animation:fadeUp .5s ease .1s forwards;opacity:0;}
+    .fade-up-d2{animation:fadeUp .5s ease .2s forwards;opacity:0;}
+    .fade-up-d3{animation:fadeUp .5s ease .3s forwards;opacity:0;}
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     DEMO BAR (always visible)
+════════════════════════════════════════════ -->
+<div id="demo-bar">
+  <div class="demo-logo">🥋 <span>Hornets</span>&nbsp;TKD</div>
+  <div class="demo-mode-pills">
+    <button class="demo-pill active" onclick="switchMode('public')">🌐 Sito</button>
+    <button class="demo-pill" onclick="switchMode('admin')">⚙️ Admin</button>
+  </div>
+  <div class="demo-badge">DEMO</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PUBLIC SITE
+════════════════════════════════════════════ -->
+<div id="public-view" class="main-offset">
+
+  <!-- NAVBAR -->
+  <nav id="pub-nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">Hornets <span>TKD</span></a>
+      <ul class="nav-links">
+        <li><a href="#corsi">Corsi</a></li>
+        <li><a href="#chi-siamo">Chi Siamo</a></li>
+        <li><a href="#galleria">Galleria</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#contatti">Contatti</a></li>
+      </ul>
+      <a href="#contatti" class="btn-yellow nav-cta" style="padding:10px 20px;font-size:13px;">Prova gratuita</a>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span id="ham-1"></span><span id="ham-2"></span><span id="ham-3"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="#corsi" onclick="closeMenu()">Corsi</a>
+    <a href="#chi-siamo" onclick="closeMenu()">Chi Siamo</a>
+    <a href="#galleria" onclick="closeMenu()">Galleria</a>
+    <a href="#news" onclick="closeMenu()">News</a>
+    <a href="#contatti" onclick="closeMenu()">Contatti</a>
+    <a href="#contatti" onclick="closeMenu()" class="btn-yellow" style="margin-top:16px;justify-content:center;">Prenota prova gratuita →</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-mesh">
+      <div class="hero-blob-1"></div>
+      <div class="hero-blob-2"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="fade-up" style="margin-bottom:28px;">
+        <span class="section-label">ASD Hornets Taekwondo · Catanzaro</span>
+      </div>
+      <h1 class="hero-title fade-up-d1">
+        Il Taekwondo che<br>
+        <span class="text-gradient underline-wave">trasforma</span><br>
+        la tua vita
+      </h1>
+      <p class="hero-sub fade-up-d2">
+        Corsi per bambini, adulti e agonisti. Più di 15 anni di storia,
+        oltre 200 atleti e 50 medaglie. Scopri la disciplina degli Hornets.
+      </p>
+      <div class="hero-ctas fade-up-d3">
+        <a href="#contatti" class="btn-yellow">Prova gratuita →</a>
+        <a href="#corsi" class="btn-outline">Scopri i corsi</a>
+      </div>
+    </div>
+    <div class="hero-scroll" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
+      <span>Scopri</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">200<span>+</span></div>
+        <div class="stat-label">Atleti attivi</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">15<span>+</span></div>
+        <div class="stat-label">Anni di storia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50<span>+</span></div>
+        <div class="stat-label">Medaglie</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORSI -->
+  <section id="corsi">
+    <div class="section-header">
+      <span class="section-label">I Nostri Corsi</span>
+      <h2 class="section-title" style="margin-top:16px;">Un percorso per <span class="text-gradient">ogni atleta</span></h2>
+      <p class="section-sub">Ogni corso è progettato dai nostri maestri per garantire progressione, sicurezza e passione.</p>
+    </div>
+    <div class="corsi-grid">
+      <div class="corso-card">
+        <span class="corso-badge">Più richiesto</span>
+        <div class="corso-emoji" style="background:#FFF8EC;">🌟</div>
+        <div class="corso-nome">Bambini</div>
+        <div class="corso-tipo" style="color:#F5A623;">Taekwondo Bambini</div>
+        <p class="corso-desc">Coordinazione, disciplina e divertimento. Il primo passo nel mondo del Taekwondo in totale sicurezza.</p>
+        <div class="corso-info">
+          <div class="corso-info-item"><span style="color:#F5A623;">👥</span> 4 – 11 anni</div>
+          <div class="corso-info-item"><span style="color:#F5A623;">🕐</span> Lun / Mer  17:00 – 18:00</div>
+        </div>
+        <div class="corso-footer">
+          <div class="corso-prezzo">€45<small>/mese</small></div>
+          <a href="#contatti" class="corso-link">Info →</a>
+        </div>
+      </div>
+      <div class="corso-card">
+        <div style="height:32px;"></div>
+        <div class="corso-emoji" style="background:#F0F2F5;">⚡</div>
+        <div class="corso-nome">Ragazzi</div>
+        <div class="corso-tipo" style="color:#0F0F1A;">Taekwondo Ragazzi</div>
+        <p class="corso-desc">Tecnica avanzata e mentalità agonistica per chi vuole fare sul serio.</p>
+        <div class="corso-info">
+          <div class="corso-info-item">👥 12 – 17 anni</div>
+          <div class="corso-info-item">🕐 Mar / Gio  17:30 – 19:00</div>
+        </div>
+        <div class="corso-footer">
+          <div class="corso-prezzo">€50<small>/mese</small></div>
+          <a href="#contatti" class="corso-link" style="color:#0F0F1A;">Info →</a>
+        </div>
+      </div>
+      <div class="corso-card">
+        <div style="height:32px;"></div>
+        <div class="corso-emoji" style="background:#F7F8FA;">💪</div>
+        <div class="corso-nome">Adulti</div>
+        <div class="corso-tipo" style="color:#0F0F1A;">Taekwondo Adulti</div>
+        <p class="corso-desc">Fitness, autodifesa e crescita personale. Non è mai troppo tardi per iniziare.</p>
+        <div class="corso-info">
+          <div class="corso-info-item">👥 18+ anni</div>
+          <div class="corso-info-item">🕐 Mar / Gio  19:00 – 20:30</div>
+        </div>
+        <div class="corso-footer">
+          <div class="corso-prezzo">€55<small>/mese</small></div>
+          <a href="#contatti" class="corso-link" style="color:#0F0F1A;">Info →</a>
+        </div>
+      </div>
+      <div class="corso-card">
+        <span class="corso-badge">Alta intensità</span>
+        <div class="corso-emoji" style="background:#FFF8EC;">🏆</div>
+        <div class="corso-nome">Agonisti</div>
+        <div class="corso-tipo" style="color:#F5A623;">Taekwondo Agonisti</div>
+        <p class="corso-desc">Preparazione élite per atleti che vogliono conquistare podi regionali e nazionali.</p>
+        <div class="corso-info">
+          <div class="corso-info-item"><span style="color:#F5A623;">👥</span> 14 – 35 anni</div>
+          <div class="corso-info-item"><span style="color:#F5A623;">🕐</span> Lun / Mer 20:30 + Sab 10:00</div>
+        </div>
+        <div class="corso-footer">
+          <div class="corso-prezzo">€70<small>/mese</small></div>
+          <a href="#contatti" class="corso-link">Info →</a>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px;">
+      <p style="font-size:14px;color:#6B7280;margin-bottom:16px;">Non sai quale corso fa per te?</p>
+      <a href="#contatti" class="btn-yellow">Prenota una prova gratuita →</a>
+    </div>
+  </section>
+
+  <!-- CHI SIAMO -->
+  <section id="chi-siamo">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="chi-grid">
+        <div>
+          <span class="section-label">Chi Siamo</span>
+          <h2 class="section-title" style="margin-top:16px;margin-bottom:12px;">Una famiglia unita<br><span class="text-gradient">dalla cintura nera</span></h2>
+          <div style="width:48px;height:4px;background:#F5A623;border-radius:99px;margin-bottom:24px;"></div>
+          <div style="display:flex;flex-direction:column;gap:12px;color:#6B7280;font-size:15px;line-height:1.7;margin-bottom:20px;">
+            <p>Gli <strong style="color:#0D0D0D;">Hornets Taekwondo</strong> nascono a Catanzaro nel 2009 con un sogno: portare l'arte marziale coreana nel cuore della Calabria, forgiando campioni non solo nello sport, ma nella vita.</p>
+            <p>Sotto la guida del <strong style="color:#0D0D0D;">Maestro Antonio Rossi, IV Dan WTF</strong>, la nostra squadra ha conquistato decine di medaglie a livello regionale e nazionale.</p>
+          </div>
+          <div class="check-list">
+            <div class="check-item">✅ Maestri certificati FITA con esperienza internazionale</div>
+            <div class="check-item">✅ Programmi personalizzati per ogni livello e fascia d'età</div>
+            <div class="check-item">✅ Ambiente familiare, inclusivo e motivante</div>
+            <div class="check-item">✅ Partecipazione a gare regionali, nazionali e internazionali</div>
+          </div>
+          <div class="chi-values">
+            <div class="chi-val">
+              <div class="chi-val-icon" style="background:#FFF8EC;">🎯</div>
+              <div class="chi-val-label">Disciplina</div>
+            </div>
+            <div class="chi-val">
+              <div class="chi-val-icon" style="background:#F0F2F5;">❤️</div>
+              <div class="chi-val-label">Passione</div>
+            </div>
+            <div class="chi-val">
+              <div class="chi-val-icon" style="background:#FFF8EC;">🏅</div>
+              <div class="chi-val-label">Eccellenza</div>
+            </div>
+          </div>
+        </div>
+        <div class="chi-img">
+          <div class="chi-img-main">
+            <span style="font-size:80px;opacity:.5;">🥋</span>
+          </div>
+          <div class="chi-img-badge">
+            <div class="chi-img-badge-num">2009</div>
+            <div class="chi-img-badge-label">Fondazione</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERIA -->
+  <section id="galleria">
+    <div class="section-header">
+      <span class="section-label">Galleria</span>
+      <h2 class="section-title" style="margin-top:16px;">La nostra <span class="text-gradient">storia in immagini</span></h2>
+    </div>
+    <div class="gallery-grid" style="max-width:1100px;margin:0 auto;">
+      <div class="gallery-item" style="aspect-ratio:16/9;" onclick="showToast('📸 Galleria completa disponibile nell\'app!')">
+        <div class="gallery-placeholder" style="background:linear-gradient(135deg,#0F0F1A,#1A1A2E);height:100%;">
+          <span style="font-size:3rem;opacity:.6;">🥋</span>
+        </div>
+        <div class="gallery-overlay"><span>Allenamento – Gen 2025</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa disponibile nell\'app!')">
+        <div class="gallery-placeholder" style="background:linear-gradient(135deg,#1a0a00,#3d1a00);height:100%;">
+          <span style="font-size:2.5rem;opacity:.6;">🏆</span>
+        </div>
+        <div class="gallery-overlay"><span>Gara Regionale 2024</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa disponibile nell\'app!')">
+        <div class="gallery-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#0d2e0d);height:100%;">
+          <span style="font-size:2.5rem;opacity:.6;">🎖️</span>
+        </div>
+        <div class="gallery-overlay"><span>Premiazione Campioni</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa disponibile nell\'app!')">
+        <div class="gallery-placeholder" style="background:linear-gradient(135deg,#1a001a,#2e002e);height:100%;">
+          <span style="font-size:2.5rem;opacity:.6;">👊</span>
+        </div>
+        <div class="gallery-overlay"><span>Stage Nazionale</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa disponibile nell\'app!')">
+        <div class="gallery-placeholder" style="background:linear-gradient(135deg,#001a1a,#002e2e);height:100%;">
+          <span style="font-size:2.5rem;opacity:.6;">🌟</span>
+        </div>
+        <div class="gallery-overlay"><span>Esame Cinture – Mar 2025</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa disponibile nell\'app!')">
+        <div class="gallery-placeholder" style="background:linear-gradient(135deg,#1a1000,#2e1e00);height:100%;">
+          <span style="font-size:2.5rem;opacity:.6;">🤸</span>
+        </div>
+        <div class="gallery-overlay"><span>Allenamento Bambini</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <button onclick="showToast('📷 Segui @hornets.tkd su Instagram!')" class="btn-outline">Vedi tutta la galleria</button>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news">
+    <div class="section-header">
+      <span class="section-label">Ultime News</span>
+      <h2 class="section-title" style="margin-top:16px;">Sempre <span class="text-gradient">aggiornati</span></h2>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#0F0F1A,#1A1A2E);">
+          <span>🏆</span>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Risultati</span>
+          <h3 class="news-title">Campionato Regionale Calabria: 5 medaglie per gli Hornets!</h3>
+          <p class="news-excerpt">I nostri atleti tornano a casa con un oro, due argenti e due bronzi dalla gara di Reggio Calabria.</p>
+          <div class="news-date">📅 15 Aprile 2025</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#1a0a00,#3d2000);">
+          <span>🎓</span>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Corsi</span>
+          <h3 class="news-title">Nuovo corso Master aperto: iscrizioni aperte fino al 31 maggio</h3>
+          <p class="news-excerpt">Per i praticanti con cintura nera che vogliono approfondire la tecnica e la filosofia del Taekwondo.</p>
+          <div class="news-date">📅 2 Maggio 2025</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#001a08,#003018);">
+          <span>📣</span>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Eventi</span>
+          <h3 class="news-title">Stage estivo con il Maestro Park: prenotazioni aperte</h3>
+          <p class="news-excerpt">Dal 14 al 16 luglio uno stage internazionale presso la nostra palestra. Posti limitati!</p>
+          <div class="news-date">📅 8 Maggio 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATTI -->
+  <section id="contatti">
+    <div class="contatti-blob"></div>
+    <div class="contatti-inner">
+      <div class="contatti-grid">
+        <div>
+          <span class="section-label" style="background:rgba(245,166,35,.1);color:#F5A623;">Contattaci</span>
+          <h2 class="contatti-title" style="margin-top:16px;">Inizia il tuo<br>percorso oggi</h2>
+          <p class="contatti-sub">La prima lezione è gratuita. Vieni a trovarci o scrivici: ti risponderemo entro 24 ore.</p>
+          <div class="contatti-info">
+            <div class="contatti-info-item">
+              <div class="contatti-info-icon">📍</div>
+              <div><strong style="color:#fff;display:block;">Sede</strong>Via Roma 45, Catanzaro (CZ)</div>
+            </div>
+            <div class="contatti-info-item">
+              <div class="contatti-info-icon">📞</div>
+              <div><strong style="color:#fff;display:block;">Telefono</strong>+39 0961 123456</div>
+            </div>
+            <div class="contatti-info-item">
+              <div class="contatti-info-icon">✉️</div>
+              <div><strong style="color:#fff;display:block;">Email</strong>info@hornetstkd.it</div>
+            </div>
+            <div class="contatti-info-item">
+              <div class="contatti-info-icon">🕐</div>
+              <div><strong style="color:#fff;display:block;">Orari segreteria</strong>Lun–Ven 16:00 – 21:00</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px;">
+            <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:#fff;margin-bottom:20px;">Prenota una prova gratuita</h3>
+            <form id="contact-form" onsubmit="submitForm(event)">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-field">
+                  <label class="form-label">Nome</label>
+                  <input class="form-input" type="text" placeholder="Mario" required />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Cognome</label>
+                  <input class="form-input" type="text" placeholder="Rossi" required />
+                </div>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Email</label>
+                <input class="form-input" type="email" placeholder="mario@email.it" required />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Telefono</label>
+                <input class="form-input" type="tel" placeholder="+39 333 123 4567" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Corso di interesse</label>
+                <select class="form-input" style="cursor:pointer;appearance:none;">
+                  <option value="" style="background:#0F0F1C;">Seleziona un corso...</option>
+                  <option style="background:#0F0F1C;">Bambini (4-11 anni)</option>
+                  <option style="background:#0F0F1C;">Ragazzi (12-17 anni)</option>
+                  <option style="background:#0F0F1C;">Adulti (18+)</option>
+                  <option style="background:#0F0F1C;">Agonisti (14-35 anni)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Messaggio (opzionale)</label>
+                <textarea class="form-input form-textarea" placeholder="Scrivi qui eventuali domande..."></textarea>
+              </div>
+              <button type="submit" class="btn-yellow" style="width:100%;justify-content:center;padding:16px;">Invia richiesta →</button>
+            </form>
+            <div class="form-success" id="form-success">
+              ✅ Richiesta inviata! Ti contatteremo entro 24 ore.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="footer-logo">Hornets <span>TKD</span></div>
+    <div class="footer-sub">ASD Hornets Taekwondo · Catanzaro, Calabria</div>
+    <div class="footer-links">
+      <a href="#corsi">Corsi</a>
+      <a href="#chi-siamo">Chi Siamo</a>
+      <a href="#galleria">Galleria</a>
+      <a href="#news">News</a>
+      <a href="#contatti">Contatti</a>
+    </div>
+    <div class="footer-copy">© 2025 ASD Hornets Taekwondo. Tutti i diritti riservati.</div>
+  </footer>
+
+</div><!-- end #public-view -->
+
+<!-- ════════════════════════════════════════════
+     ADMIN PANEL
+════════════════════════════════════════════ -->
+<div id="admin-view" class="main-offset">
+
+  <!-- LOGIN -->
+  <div id="admin-login">
+    <div class="login-card">
+      <div class="login-logo">Hornets <span>TKD</span></div>
+      <div class="login-sub">Backoffice Amministratori</div>
+      <div class="login-hint">
+        💡 <span><strong>Demo:</strong> qualsiasi email e password</span>
+      </div>
+      <form onsubmit="doLogin(event)">
+        <div class="login-field">
+          <label class="login-label">Email</label>
+          <input class="login-input" type="email" value="admin@hornetstkd.it" placeholder="admin@hornetstkd.it" />
+        </div>
+        <div class="login-field">
+          <label class="login-label">Password</label>
+          <input class="login-input" type="password" value="password123" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="login-btn">Accedi al pannello →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN SHELL -->
+  <div id="admin-shell">
+
+    <!-- Top bar -->
+    <div class="adm-topbar">
+      <div class="adm-topbar-title" id="adm-page-title">Dashboard</div>
+      <div class="adm-topbar-right">
+        <div class="adm-notif" onclick="showToast('🔔 3 nuove notifiche')">
+          🔔<div class="adm-notif-dot"></div>
+        </div>
+        <div class="adm-avatar" onclick="doLogout()">AR</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="adm-content">
+
+      <!-- DASHBOARD PAGE -->
+      <div class="adm-page active" id="page-dashboard">
+        <div style="margin-bottom:20px;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:22px;color:#fff;">Buongiorno, Antonio 👋</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.35);margin-top:4px;">Lunedì, 12 Maggio 2025</div>
+        </div>
+
+        <div class="adm-stats">
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">📝</div>
+            <div class="adm-stat-num">3</div>
+            <div class="adm-stat-label">Prenotazioni nuove</div>
+            <div class="adm-stat-delta new">● Nuove</div>
+          </div>
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">✉️</div>
+            <div class="adm-stat-num">8</div>
+            <div class="adm-stat-label">Messaggi da leggere</div>
+            <div class="adm-stat-delta new">● Non letti</div>
+          </div>
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">👥</div>
+            <div class="adm-stat-num">47</div>
+            <div class="adm-stat-label">Iscritti attivi</div>
+            <div class="adm-stat-delta up">▲ +3</div>
+          </div>
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">💰</div>
+            <div class="adm-stat-num">€2.4k</div>
+            <div class="adm-stat-label">Incasso mensile</div>
+            <div class="adm-stat-delta up">▲ +12%</div>
+          </div>
+        </div>
+
+        <div class="adm-card" style="margin-bottom:16px;">
+          <div class="adm-card-title">
+            Attività recente
+            <span onclick="showToast('📊 Report completo in arrivo!')">Vedi tutto</span>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#F5A623;"></div>
+              <div class="activity-text">Nuova prenotazione prova da <strong style="color:#fff;">Luca Ferraro</strong> (Ragazzi)</div>
+              <div class="activity-time">5 min fa</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#4ade80;"></div>
+              <div class="activity-text"><strong style="color:#fff;">Sofia Marino</strong> ha completato l'iscrizione al corso Adulti</div>
+              <div class="activity-time">1 ora fa</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#a5b4fc;"></div>
+              <div class="activity-text">Nuovo messaggio da <strong style="color:#fff;">Marco Esposito</strong>: informazioni sui corsi</div>
+              <div class="activity-time">3 ore fa</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#F5A623;"></div>
+              <div class="activity-text">Prenotazione prova da <strong style="color:#fff;">Anna Conti</strong> (Bambini)</div>
+              <div class="activity-time">Ieri 18:42</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#4ade80;"></div>
+              <div class="activity-text">Articolo news pubblicato: <strong style="color:#fff;">Stage estivo con Maestro Park</strong></div>
+              <div class="activity-time">Ieri 10:15</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title">
+            Corsi – Iscritti
+            <span onclick="showAdmPage('corsi')">Gestisci</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+                <span style="color:#fff;">🌟 Bambini</span><span style="color:rgba(255,255,255,.4);">18 / 25</span>
+              </div>
+              <div style="height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;">
+                <div style="height:100%;width:72%;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:999px;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+                <span style="color:#fff;">⚡ Ragazzi</span><span style="color:rgba(255,255,255,.4);">12 / 20</span>
+              </div>
+              <div style="height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;">
+                <div style="height:100%;width:60%;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:999px;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+                <span style="color:#fff;">💪 Adulti</span><span style="color:rgba(255,255,255,.4);">11 / 20</span>
+              </div>
+              <div style="height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;">
+                <div style="height:100%;width:55%;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:999px;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+                <span style="color:#fff;">🏆 Agonisti</span><span style="color:rgba(255,255,255,.4);">6 / 15</span>
+              </div>
+              <div style="height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;">
+                <div style="height:100%;width:40%;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:999px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORSI PAGE -->
+      <div class="adm-page" id="page-corsi">
+        <button class="adm-add-btn" onclick="showToast('➕ Nuovo corso: funzione disponibile nell\'app completa')">+ Aggiungi corso</button>
+        <div class="adm-card">
+          <div class="adm-card-title">Corsi attivi</div>
+          <div class="table-scroll">
+            <table class="adm-table">
+              <thead>
+                <tr><th>Corso</th><th>Età</th><th>Orari</th><th>Iscritti</th><th>Prezzo</th><th>Azioni</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="margin-right:6px;">🌟</span><strong style="color:#fff;">Bambini</strong></td>
+                  <td>4–11</td><td>Lun/Mer 17:00</td>
+                  <td><span style="color:#4ade80;font-weight:700;">18</span><span style="color:rgba(255,255,255,.3);">/25</span></td>
+                  <td>€45</td>
+                  <td style="display:flex;gap:6px;">
+                    <button class="adm-action-btn" onclick="showToast('✏️ Modifica corso: funzione disponibile nell\'app')">Modifica</button>
+                    <button class="adm-action-btn danger" onclick="showToast('🚫 Elimina: funzione disponibile nell\'app')">Elimina</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="margin-right:6px;">⚡</span><strong style="color:#fff;">Ragazzi</strong></td>
+                  <td>12–17</td><td>Mar/Gio 17:30</td>
+                  <td><span style="color:#4ade80;font-weight:700;">12</span><span style="color:rgba(255,255,255,.3);">/20</span></td>
+                  <td>€50</td>
+                  <td style="display:flex;gap:6px;">
+                    <button class="adm-action-btn" onclick="showToast('✏️ Modifica corso')">Modifica</button>
+                    <button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="margin-right:6px;">💪</span><strong style="color:#fff;">Adulti</strong></td>
+                  <td>18+</td><td>Mar/Gio 19:00</td>
+                  <td><span style="color:#F5A623;font-weight:700;">11</span><span style="color:rgba(255,255,255,.3);">/20</span></td>
+                  <td>€55</td>
+                  <td style="display:flex;gap:6px;">
+                    <button class="adm-action-btn" onclick="showToast('✏️ Modifica corso')">Modifica</button>
+                    <button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="margin-right:6px;">🏆</span><strong style="color:#fff;">Agonisti</strong></td>
+                  <td>14–35</td><td>Lun/Mer 20:30</td>
+                  <td><span style="color:#F5A623;font-weight:700;">6</span><span style="color:rgba(255,255,255,.3);">/15</span></td>
+                  <td>€70</td>
+                  <td style="display:flex;gap:6px;">
+                    <button class="adm-action-btn" onclick="showToast('✏️ Modifica corso')">Modifica</button>
+                    <button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MESSAGGI PAGE -->
+      <div class="adm-page" id="page-messaggi">
+        <div class="adm-card">
+          <div class="adm-card-title">
+            Messaggi ricevuti
+            <span onclick="showToast('✅ Tutti segnati come letti')">Segna tutti letti</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.1);border-radius:14px;padding:14px;cursor:pointer;" onclick="showToast('📧 Apertura messaggio...')">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-weight:600;color:#fff;font-size:14px;">Marco Esposito</div>
+                <span class="pill pill-new">Nuovo</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px;">marco.esposito@gmail.com</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);">Salve, vorrei informazioni sui corsi per adulti. Sono un principiante...</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px;">3 ore fa</div>
+            </div>
+            <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;cursor:pointer;" onclick="showToast('📧 Apertura messaggio...')">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-weight:600;color:#fff;font-size:14px;">Giulia Ricci</div>
+                <span class="pill pill-new">Nuovo</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px;">g.ricci@email.it</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);">Mia figlia ha 8 anni, è possibile iscriverla al corso bambini...</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px;">Ieri 19:30</div>
+            </div>
+            <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;cursor:pointer;" onclick="showToast('📧 Apertura messaggio...')">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-weight:600;color:#fff;font-size:14px;">Roberto Bianchi</div>
+                <span class="pill pill-read">Letto</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px;">r.bianchi@libero.it</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);">Quante lezioni sono incluse nella quota mensile?</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px;">2 gg fa</div>
+            </div>
+            <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;cursor:pointer;" onclick="showToast('📧 Messaggio già risposto')">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-weight:600;color:#fff;font-size:14px;">Carmela Vitale</div>
+                <span class="pill pill-replied">Risposto</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px;">carmela.v@hotmail.it</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);">Grazie mille per le informazioni! Ci vediamo martedì.</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px;">3 gg fa</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRENOTAZIONI PAGE -->
+      <div class="adm-page" id="page-prenotazioni">
+        <div class="adm-card">
+          <div class="adm-card-title">Richieste di prova gratuita</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.1);border-radius:14px;padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <div>
+                  <div style="font-weight:600;color:#fff;font-size:14px;">Luca Ferraro</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,.4);">+39 340 123 4567 · Corso: Ragazzi</div>
+                </div>
+                <span class="pill pill-new">Nuova</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;">📅 Richiesta: 12 Mag 2025, 14:32</div>
+              <div style="display:flex;gap:8px;">
+                <button class="adm-action-btn" style="flex:1;justify-content:center;" onclick="showToast('✅ Prenotazione confermata per Luca Ferraro!')">✓ Conferma</button>
+                <button class="adm-action-btn danger" onclick="showToast('❌ Prenotazione annullata')">✗ Annulla</button>
+              </div>
+            </div>
+            <div style="background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.1);border-radius:14px;padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <div>
+                  <div style="font-weight:600;color:#fff;font-size:14px;">Anna Conti</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,.4);">+39 347 987 6543 · Corso: Bambini</div>
+                </div>
+                <span class="pill pill-new">Nuova</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;">📅 Richiesta: 11 Mag 2025, 18:15</div>
+              <div style="display:flex;gap:8px;">
+                <button class="adm-action-btn" style="flex:1;justify-content:center;" onclick="showToast('✅ Prenotazione confermata per Anna Conti!')">✓ Conferma</button>
+                <button class="adm-action-btn danger" onclick="showToast('❌ Prenotazione annullata')">✗ Annulla</button>
+              </div>
+            </div>
+            <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <div>
+                  <div style="font-weight:600;color:#fff;font-size:14px;">Davide Romano</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,.4);">+39 320 456 7890 · Corso: Adulti</div>
+                </div>
+                <span class="pill pill-ok">Confermata</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.3);">📅 Confermata per: Giovedì 15 Mag, 19:00</div>
+            </div>
+            <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <div>
+                  <div style="font-weight:600;color:#fff;font-size:14px;">Elena Gallo</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,.4);">+39 335 234 5678 · Corso: Bambini</div>
+                </div>
+                <span class="pill pill-ok">Confermata</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.3);">📅 Confermata per: Mercoledì 14 Mag, 17:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .adm-content -->
+
+    <!-- Bottom navigation -->
+    <nav class="adm-bottom-nav">
+      <button class="adm-nav-item active" id="nav-dashboard" onclick="showAdmPage('dashboard')">
+        <span class="adm-nav-icon">📊</span>
+        <span class="adm-nav-label">Dashboard</span>
+      </button>
+      <button class="adm-nav-item" id="nav-corsi" onclick="showAdmPage('corsi')">
+        <span class="adm-nav-icon">🥋</span>
+        <span class="adm-nav-label">Corsi</span>
+      </button>
+      <button class="adm-nav-item" id="nav-messaggi" onclick="showAdmPage('messaggi')">
+        <span class="adm-nav-icon">✉️</span>
+        <span class="adm-nav-label">Messaggi</span>
+      </button>
+      <button class="adm-nav-item" id="nav-prenotazioni" onclick="showAdmPage('prenotazioni')">
+        <span class="adm-nav-icon">📝</span>
+        <span class="adm-nav-label">Prenotaz.</span>
+      </button>
+    </nav>
+
+  </div><!-- end #admin-shell -->
+
+</div><!-- end #admin-view -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// MODE SWITCHING
+// ═══════════════════════════════════════
+function switchMode(mode) {
+  const pills = document.querySelectorAll('.demo-pill');
+  pills.forEach(p => p.classList.remove('active'));
+
+  if (mode === 'public') {
+    pills[0].classList.add('active');
+    document.getElementById('public-view').style.display = 'block';
+    document.getElementById('admin-view').style.display = 'none';
+  } else {
+    pills[1].classList.add('active');
+    document.getElementById('public-view').style.display = 'none';
+    document.getElementById('admin-view').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+}
+
+// ═══════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════
+let menuOpen = false;
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('open', menuOpen);
+  const h1 = document.getElementById('ham-1');
+  const h2 = document.getElementById('ham-2');
+  const h3 = document.getElementById('ham-3');
+  if (menuOpen) {
+    h1.style.transform = 'rotate(45deg) translate(5px,5px)';
+    h2.style.opacity = '0';
+    h3.style.transform = 'rotate(-45deg) translate(5px,-5px)';
+  } else {
+    h1.style.transform = '';
+    h2.style.opacity = '';
+    h3.style.transform = '';
+  }
+}
+function closeMenu() {
+  menuOpen = false;
+  document.getElementById('mobile-menu').classList.remove('open');
+  const h1 = document.getElementById('ham-1');
+  const h2 = document.getElementById('ham-2');
+  const h3 = document.getElementById('ham-3');
+  h1.style.transform = '';
+  h2.style.opacity = '';
+  h3.style.transform = '';
+}
+
+// ═══════════════════════════════════════
+// CONTACT FORM
+// ═══════════════════════════════════════
+function submitForm(e) {
+  e.preventDefault();
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('form-success');
+  form.style.display = 'none';
+  success.style.display = 'block';
+  showToast('✅ Richiesta inviata con successo!');
+}
+
+// ═══════════════════════════════════════
+// ADMIN LOGIN / LOGOUT
+// ═══════════════════════════════════════
+function doLogin(e) {
+  e.preventDefault();
+  document.getElementById('admin-login').style.display = 'none';
+  document.getElementById('admin-shell').style.display = 'flex';
+  showToast('👋 Benvenuto, Antonio!');
+}
+function doLogout() {
+  document.getElementById('admin-shell').style.display = 'none';
+  document.getElementById('admin-login').style.display = 'flex';
+  showToast('👋 Disconnesso');
+}
+
+// ═══════════════════════════════════════
+// ADMIN NAVIGATION
+// ═══════════════════════════════════════
+const pageTitles = {
+  dashboard: 'Dashboard',
+  corsi: 'Gestione Corsi',
+  messaggi: 'Messaggi',
+  prenotazioni: 'Prenotazioni'
+};
+function showAdmPage(name) {
+  // Hide all pages
+  document.querySelectorAll('.adm-page').forEach(p => p.classList.remove('active'));
+  // Show target
+  document.getElementById('page-' + name).classList.add('active');
+  // Update nav
+  document.querySelectorAll('.adm-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('nav-' + name).classList.add('active');
+  // Update title
+  document.getElementById('adm-page-title').textContent = pageTitles[name];
+  // Scroll to top
+  document.querySelector('.adm-content').scrollTop = 0;
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ═══════════════════════════════════════
+// INTERSECTION OBSERVER for animations
+// ═══════════════════════════════════════
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => {
+    if (el.isIntersecting) {
+      el.target.style.opacity = '1';
+      el.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.corso-card, .news-card, .gallery-item, .adm-stat-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
