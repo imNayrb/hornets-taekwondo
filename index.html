@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Hornets Taekwondo – Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+    body{font-family:'Inter',system-ui,sans-serif;background:#F7F8FA;color:#0D0D0D;overflow-x:hidden;}
+    ::selection{background:#F5A623;color:#0D0D0D;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-track{background:#F7F8FA;}
+    ::-webkit-scrollbar-thumb{background:#F5A623;border-radius:99px;}
+
+    .font-display{font-family:'Outfit',system-ui,sans-serif;}
+    .text-gradient{background:linear-gradient(135deg,#F5A623,#E08C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .underline-wave{position:relative;display:inline-block;}
+    .underline-wave::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:3px;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:99px;}
+
+    /* ── Buttons ── */
+    .btn-primary{display:inline-flex;align-items:center;gap:8px;background:#0D0D0D;color:#fff;font-weight:600;padding:14px 28px;border-radius:999px;font-size:14px;cursor:pointer;border:none;transition:all .25s;text-decoration:none;}
+    .btn-primary:hover{background:#0F0F1A;transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.18);}
+    .btn-yellow{display:inline-flex;align-items:center;gap:8px;background:#F5A623;color:#0D0D0D;font-weight:600;padding:14px 28px;border-radius:999px;font-size:14px;cursor:pointer;border:none;transition:all .25s;text-decoration:none;}
+    .btn-yellow:hover{background:#E08C00;transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,166,35,.4);}
+    .btn-outline{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0D0D0D;font-weight:600;padding:14px 28px;border-radius:999px;font-size:14px;cursor:pointer;border:1.5px solid #E8EAF0;transition:all .25s;text-decoration:none;}
+    .btn-outline:hover{border-color:#0D0D0D;transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08);}
+
+    /* ── Public cards / labels ── */
+    .card{background:#fff;border-radius:24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border:1px solid #E8EAF0;transition:all .3s;}
+    .card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-4px);}
+    .section-label{display:inline-flex;align-items:center;gap:8px;background:#FFF8EC;color:#E08C00;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;padding:6px 16px;border-radius:999px;}
+
+    /* ── Demo bar ── */
+    #demo-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#0D0D0D;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .demo-logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:14px;color:#fff;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+    .demo-logo span{color:#F5A623;}
+    .demo-mode-pills{display:flex;gap:3px;background:rgba(255,255,255,.06);border-radius:999px;padding:3px;}
+    .demo-pill{font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,.5);border:none;background:transparent;white-space:nowrap;}
+    .demo-pill.active{background:#F5A623;color:#0D0D0D;}
+    .demo-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;background:rgba(245,166,35,.15);color:#F5A623;padding:3px 8px;border-radius:999px;flex-shrink:0;}
+    @media(max-width:360px){.demo-badge{display:none;}}
+
+    .main-offset{padding-top:44px;}
+
+    /* ════════════════════════════════════════════
+       PUBLIC SITE
+    ════════════════════════════════════════════ */
+
+    #pub-nav{position:sticky;top:44px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid #E8EAF0;}
+    .nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:20px;letter-spacing:-.02em;color:#0D0D0D;text-decoration:none;}
+    .nav-logo span{color:#F5A623;}
+    .nav-links{display:none;gap:32px;list-style:none;}
+    @media(min-width:768px){.nav-links{display:flex;}}
+    .nav-links a{font-size:14px;font-weight:500;color:#6B7280;text-decoration:none;transition:color .2s;}
+    .nav-links a:hover{color:#0D0D0D;}
+    .nav-cta{display:none;}
+    @media(min-width:768px){.nav-cta{display:inline-flex;}}
+    .hamburger{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;}
+    @media(min-width:768px){.hamburger{display:none;}}
+    .hamburger span{display:block;width:22px;height:2px;background:#0D0D0D;border-radius:2px;transition:all .3s;}
+    .mobile-menu{display:none;position:fixed;inset:44px 0 0;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);z-index:99;flex-direction:column;padding:24px 20px;gap:4px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-size:18px;font-weight:600;color:#0D0D0D;text-decoration:none;padding:14px 0;border-bottom:1px solid #E8EAF0;}
+
+    #hero{min-height:calc(100svh - 108px);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#fff;}
+    .hero-blob-1{position:absolute;top:-10%;right:-10%;width:600px;height:600px;border-radius:50%;background:rgba(245,166,35,.12);filter:blur(100px);pointer-events:none;}
+    .hero-blob-2{position:absolute;bottom:-10%;left:-10%;width:450px;height:450px;border-radius:50%;background:rgba(245,166,35,.08);filter:blur(90px);pointer-events:none;}
+    .hero-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(#0D0D0D 1px,transparent 1px),linear-gradient(90deg,#0D0D0D 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+    .hero-content{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:60px 20px;text-align:center;}
+    .hero-title{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2.4rem,8vw,5.5rem);line-height:1.06;letter-spacing:-.03em;color:#0D0D0D;margin-bottom:24px;}
+    .hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:#6B7280;max-width:540px;margin:0 auto 40px;line-height:1.7;}
+    .hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#6B7280;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+    .scroll-arrow{width:28px;height:28px;border:1.5px solid #E8EAF0;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:bounceY 2s ease-in-out infinite;}
+    @keyframes bounceY{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+
+    #stats{background:#F7F8FA;padding:48px 20px;}
+    .stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#E8EAF0;border-radius:24px;overflow:hidden;}
+    .stat-item{background:#fff;padding:32px 20px;text-align:center;}
+    .stat-num{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);color:#0D0D0D;line-height:1;}
+    .stat-num span{color:#F5A623;}
+    .stat-label{font-size:12px;color:#6B7280;font-weight:500;margin-top:6px;text-transform:uppercase;letter-spacing:.06em;}
+
+    #corsi{padding:80px 20px;background:#fff;}
+    .section-header{text-align:center;margin-bottom:56px;}
+    .section-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.025em;color:#0D0D0D;margin-bottom:12px;}
+    .section-sub{font-size:16px;color:#6B7280;max-width:480px;margin:0 auto;line-height:1.6;}
+    .corsi-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:16px;}
+    @media(min-width:640px){.corsi-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(min-width:1024px){.corsi-grid{grid-template-columns:repeat(4,1fr);}}
+    .corso-card{background:#fff;border-radius:24px;border:1px solid #E8EAF0;padding:28px;display:flex;flex-direction:column;transition:all .3s;}
+    .corso-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-4px);}
+    .corso-badge{display:inline-block;background:#F5A623;color:#0D0D0D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 12px;border-radius:999px;margin-bottom:16px;align-self:flex-start;}
+    .corso-emoji{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;}
+    .corso-nome{font-family:'Outfit',sans-serif;font-weight:700;font-size:22px;color:#0D0D0D;margin-bottom:4px;}
+    .corso-tipo{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+    .corso-desc{font-size:13px;color:#6B7280;line-height:1.6;margin-bottom:20px;flex:1;}
+    .corso-info{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid #E8EAF0;margin-bottom:16px;}
+    .corso-info-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#6B7280;}
+    .corso-footer{display:flex;align-items:center;justify-content:space-between;}
+    .corso-prezzo{font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;color:#0D0D0D;}
+    .corso-prezzo small{font-size:12px;color:#6B7280;font-family:'Inter',sans-serif;font-weight:400;}
+    .corso-link{font-size:12px;font-weight:600;color:#F5A623;text-decoration:none;display:flex;align-items:center;gap:4px;}
+
+    #chi-siamo{padding:80px 20px;background:#F7F8FA;overflow:hidden;}
+    .chi-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
+    @media(min-width:1024px){.chi-grid{grid-template-columns:1fr 1fr;}}
+    .chi-values{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px;}
+    .chi-val{background:#fff;border-radius:16px;padding:20px 16px;text-align:center;border:1px solid #E8EAF0;}
+    .chi-val-icon{width:40px;height:40px;border-radius:12px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+    .chi-val-label{font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#0D0D0D;}
+    .chi-img-main{width:100%;border-radius:32px;aspect-ratio:4/3;background:linear-gradient(135deg,#0F0F1A 0%,#1A1A2E 50%,#2a1a0a 100%);display:flex;align-items:center;justify-content:center;position:relative;}
+    .chi-img-badge{position:absolute;bottom:-20px;right:24px;background:#F5A623;border-radius:20px;padding:16px 20px;box-shadow:0 8px 28px rgba(245,166,35,.4);}
+    .chi-img-badge-num{font-family:'Outfit',sans-serif;font-weight:900;font-size:28px;color:#0D0D0D;line-height:1;}
+    .chi-img-badge-label{font-size:11px;font-weight:600;color:#0D0D0D;opacity:.7;}
+    .check-list{display:flex;flex-direction:column;gap:12px;margin:24px 0;}
+    .check-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#3D3D3D;}
+
+    #galleria-pub{padding:80px 20px;background:#fff;}
+    .gallery-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+    @media(min-width:768px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
+    .gallery-item{border-radius:20px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;transition:all .3s;position:relative;}
+    .gallery-item:hover{transform:scale(1.02);box-shadow:0 8px 32px rgba(0,0,0,.15);}
+    .gallery-item:first-child{grid-column:span 2;}
+    @media(min-width:768px){.gallery-item:first-child{grid-column:span 1;}}
+    .gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 60%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:16px;}
+    .gallery-item:hover .gallery-overlay{opacity:1;}
+    .gallery-overlay span{color:#fff;font-size:12px;font-weight:600;}
+
+    #news-pub{padding:80px 20px;background:#F7F8FA;}
+    .news-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:20px;}
+    @media(min-width:768px){.news-grid{grid-template-columns:repeat(3,1fr);}}
+    .news-card{background:#fff;border-radius:24px;border:1px solid #E8EAF0;overflow:hidden;transition:all .3s;cursor:pointer;}
+    .news-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-4px);}
+    .news-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+    .news-body{padding:20px;}
+    .news-tag{display:inline-block;background:#FFF8EC;color:#E08C00;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:999px;margin-bottom:10px;}
+    .news-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;color:#0D0D0D;margin-bottom:8px;line-height:1.3;}
+    .news-excerpt{font-size:13px;color:#6B7280;line-height:1.6;margin-bottom:12px;}
+    .news-date{font-size:11px;color:#9CA3AF;}
+
+    #contatti{padding:80px 20px;background:linear-gradient(135deg,#0F0F1A 0%,#1a0f2e 100%);position:relative;overflow:hidden;}
+    .contatti-blob{position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:rgba(245,166,35,.08);filter:blur(80px);pointer-events:none;}
+    .contatti-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+    .contatti-grid{display:grid;grid-template-columns:1fr;gap:48px;}
+    @media(min-width:768px){.contatti-grid{grid-template-columns:1fr 1fr;}}
+    .contatti-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.8rem);color:#fff;letter-spacing:-.025em;margin-bottom:16px;}
+    .contatti-sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;}
+    .contatti-info{display:flex;flex-direction:column;gap:16px;}
+    .contatti-info-item{display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.7);font-size:14px;}
+    .contatti-info-icon{width:40px;height:40px;border-radius:12px;background:rgba(245,166,35,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+    .form-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;}
+    .form-input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:14px 16px;border-radius:14px;font-size:14px;font-family:'Inter',sans-serif;transition:all .2s;outline:none;width:100%;}
+    .form-input::placeholder{color:rgba(255,255,255,.25);}
+    .form-input:focus{border-color:rgba(245,166,35,.5);background:rgba(255,255,255,.08);box-shadow:0 0 0 3px rgba(245,166,35,.1);}
+    .form-textarea{resize:none;height:100px;}
+    .form-success{display:none;text-align:center;padding:24px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:16px;color:#F5A623;font-weight:600;}
+
+    #footer{background:#0D0D0D;padding:40px 20px;text-align:center;}
+    .footer-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:22px;color:#fff;margin-bottom:8px;}
+    .footer-logo span{color:#F5A623;}
+    .footer-sub{font-size:13px;color:rgba(255,255,255,.3);margin-bottom:20px;}
+    .footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;margin-bottom:20px;}
+    .footer-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s;}
+    .footer-links a:hover{color:#F5A623;}
+    .footer-copy{font-size:12px;color:rgba(255,255,255,.2);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .fade-up{animation:fadeUp .5s ease forwards;}
+    .fade-up-d1{animation:fadeUp .5s ease .1s forwards;opacity:0;}
+    .fade-up-d2{animation:fadeUp .5s ease .2s forwards;opacity:0;}
+    .fade-up-d3{animation:fadeUp .5s ease .3s forwards;opacity:0;}
+
+    /* ════════════════════════════════════════════
+       ADMIN PANEL
+    ════════════════════════════════════════════ */
+
+    #admin-view{display:none;position:fixed;top:44px;left:0;right:0;bottom:0;background:#08080F;overflow:hidden;}
+
+    /* Login */
+    #admin-login{display:flex;align-items:center;justify-content:center;height:100%;overflow-y:auto;padding:20px;background:linear-gradient(135deg,#08080F 0%,#0f0a1a 100%);}
+    .login-card{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:28px;padding:clamp(28px,5vw,44px);width:100%;max-width:400px;}
+    .login-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:28px;color:#fff;text-align:center;margin-bottom:6px;}
+    .login-logo span{color:#F5A623;}
+    .login-sub{text-align:center;font-size:13px;color:rgba(255,255,255,.3);margin-bottom:32px;}
+    .login-hint{display:flex;align-items:center;gap:8px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.15);border-radius:10px;padding:10px 14px;width:100%;margin-bottom:28px;font-size:12px;color:rgba(245,166,35,.8);}
+    .login-field{margin-bottom:16px;}
+    .login-label{display:block;font-size:11px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+    .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;padding:14px 16px;border-radius:14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all .2s;}
+    .login-input:focus{border-color:rgba(245,166,35,.4);background:rgba(255,255,255,.06);}
+    .login-btn{width:100%;background:#F5A623;color:#0D0D0D;font-weight:700;padding:16px;border-radius:14px;border:none;font-size:15px;cursor:pointer;margin-top:8px;transition:all .25s;font-family:'Outfit',sans-serif;}
+    .login-btn:hover{background:#E08C00;transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,166,35,.4);}
+
+    /* Admin shell — mobile: column; desktop: row (sidebar + main) */
+    #admin-shell{display:none;width:100%;height:100%;flex-direction:column;overflow:hidden;}
+    @media(min-width:768px){#admin-shell{flex-direction:row;}}
+
+    /* ── Sidebar (desktop only) ── */
+    .adm-sidebar{display:none;}
+    @media(min-width:768px){
+      .adm-sidebar{display:flex;flex-direction:column;width:220px;min-width:220px;background:#0F0F1C;border-right:1px solid rgba(255,255,255,.06);height:100%;overflow-y:auto;flex-shrink:0;}
+      .adm-sidebar-logo{padding:20px 20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:8px;}
+      .adm-sidebar-logo-icon{width:34px;height:34px;border-radius:10px;background:#F5A623;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+      .adm-sidebar-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;color:#fff;letter-spacing:-.01em;}
+      .adm-sidebar-logo-text span{color:#F5A623;}
+      .adm-sidebar-nav{flex:1;padding:4px 12px;}
+      .adm-sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:all .2s;border:none;background:none;width:100%;text-align:left;margin-bottom:2px;}
+      .adm-sidebar-item:hover{background:rgba(255,255,255,.04);}
+      .adm-sidebar-item.active{background:rgba(245,166,35,.1);position:relative;}
+      .adm-sidebar-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:#F5A623;border-radius:999px;}
+      .adm-sidebar-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+      .adm-sidebar-label{font-size:13px;font-weight:600;color:rgba(255,255,255,.45);transition:color .2s;}
+      .adm-sidebar-item.active .adm-sidebar-label{color:#F5A623;}
+      .adm-sidebar-item:hover .adm-sidebar-label{color:rgba(255,255,255,.8);}
+      .adm-sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.06);}
+      .adm-sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:background .2s;}
+      .adm-sidebar-user:hover{background:rgba(255,255,255,.04);}
+      .adm-sidebar-user-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#F5A623,#E08C00);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0D0D0D;flex-shrink:0;}
+      .adm-sidebar-user-info{min-width:0;}
+      .adm-sidebar-user-name{font-size:13px;font-weight:600;color:#fff;}
+      .adm-sidebar-user-role{font-size:10px;color:rgba(255,255,255,.3);}
+    }
+
+    /* ── Main area (right of sidebar on desktop) ── */
+    .adm-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+    /* Topbar */
+    .adm-topbar{background:#0F0F1C;border-bottom:1px solid rgba(255,255,255,.06);height:58px;min-height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;}
+    .adm-topbar-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:#fff;}
+    .adm-topbar-right{display:flex;align-items:center;gap:10px;}
+    .adm-notif{position:relative;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
+    .adm-notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#F5A623;border:2px solid #0F0F1C;}
+    .adm-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E08C00);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0D0D0D;cursor:pointer;flex-shrink:0;}
+
+    /* Content */
+    .adm-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px calc(72px + env(safe-area-inset-bottom));min-height:0;}
+    @media(min-width:768px){
+      .adm-content{padding:24px;padding-bottom:24px;}
+    }
+
+    /* Bottom nav — mobile only */
+    .adm-bottom-nav{background:#0F0F1C;border-top:1px solid rgba(255,255,255,.06);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);}
+    @media(min-width:768px){.adm-bottom-nav{display:none;}}
+    .adm-bottom-nav::-webkit-scrollbar{display:none;}
+    .adm-nav-item{flex:0 0 auto;min-width:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;gap:3px;cursor:pointer;transition:all .2s;border:none;background:none;scroll-snap-align:start;}
+    .adm-nav-icon{font-size:19px;transition:transform .2s;line-height:1;}
+    .adm-nav-label{font-size:9px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.05em;transition:color .2s;white-space:nowrap;}
+    .adm-nav-item.active .adm-nav-label{color:#F5A623;}
+    .adm-nav-item.active .adm-nav-icon{transform:scale(1.12);}
+
+    /* Stat cards */
+    .adm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+    .adm-stat-card{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px 14px;}
+    .adm-stat-icon{font-size:18px;margin-bottom:8px;}
+    .adm-stat-num{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(20px,4vw,28px);color:#fff;line-height:1;}
+    .adm-stat-label{font-size:10px;color:rgba(255,255,255,.35);margin-top:4px;font-weight:500;line-height:1.3;}
+    .adm-stat-delta{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;margin-top:6px;padding:2px 7px;border-radius:999px;}
+    .adm-stat-delta.up{background:rgba(34,197,94,.12);color:#4ade80;}
+    .adm-stat-delta.new{background:rgba(245,166,35,.12);color:#F5A623;}
+    .adm-stat-delta.red{background:rgba(239,68,68,.12);color:#f87171;}
+
+    /* Quick actions */
+    .adm-quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+    @media(min-width:400px){.adm-quick-grid{grid-template-columns:repeat(3,1fr);}}
+    .adm-quick-btn{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .2s;text-align:center;}
+    .adm-quick-btn:hover{background:rgba(245,166,35,.06);border-color:rgba(245,166,35,.2);}
+    .adm-quick-icon{font-size:20px;}
+    .adm-quick-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);line-height:1.2;}
+
+    /* Admin card */
+    .adm-card{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:16px;margin-bottom:12px;}
+    .adm-card-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .adm-card-action{font-size:10px;font-weight:600;color:#F5A623;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+
+    /* Activity list */
+    .activity-list{display:flex;flex-direction:column;gap:8px;}
+    .activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px;background:rgba(255,255,255,.02);border-radius:12px;}
+    .activity-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+    .activity-body{flex:1;min-width:0;}
+    .activity-text{font-size:12px;color:rgba(255,255,255,.65);line-height:1.4;}
+    .activity-time{font-size:10px;color:rgba(255,255,255,.25);margin-top:3px;}
+
+    /* Bar chart rows */
+    .bar-row{margin-bottom:10px;}
+    .bar-row-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+    .bar-row-name{color:#fff;}
+    .bar-row-count{color:rgba(255,255,255,.35);}
+    .bar-track{height:5px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;}
+    .bar-fill{height:100%;background:linear-gradient(90deg,#F5A623,#E08C00);border-radius:999px;}
+
+    /* Table */
+    .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .adm-table{width:100%;border-collapse:collapse;min-width:440px;}
+    .adm-table th{font-size:10px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.06);}
+    .adm-table td{font-size:12px;color:rgba(255,255,255,.75);padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+    .adm-table tr:last-child td{border-bottom:none;}
+    .adm-table tr:hover td{background:rgba(255,255,255,.02);}
+
+    /* Status pills */
+    .pill{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
+    .pill-new{background:rgba(245,166,35,.12);color:#F5A623;}
+    .pill-ok{background:rgba(34,197,94,.12);color:#4ade80;}
+    .pill-done{background:rgba(99,102,241,.12);color:#a5b4fc;}
+    .pill-no{background:rgba(239,68,68,.12);color:#f87171;}
+    .pill-read{background:rgba(99,102,241,.12);color:#a5b4fc;}
+    .pill-replied{background:rgba(34,197,94,.12);color:#4ade80;}
+    .pill-draft{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);}
+    .pill-pub{background:rgba(34,197,94,.12);color:#4ade80;}
+    .pill-active{background:rgba(34,197,94,.12);color:#4ade80;}
+    .pill-inactive{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);}
+
+    /* Action buttons */
+    .adm-action-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6);font-size:10px;font-weight:600;padding:4px 9px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+    .adm-action-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .adm-action-btn.danger:hover{background:rgba(239,68,68,.12);color:#f87171;border-color:rgba(239,68,68,.2);}
+    .adm-action-btn.yellow{background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.2);color:#F5A623;}
+
+    /* Add button */
+    .adm-add-btn{display:inline-flex;align-items:center;gap:6px;background:#F5A623;color:#0D0D0D;font-weight:700;font-size:12px;padding:9px 14px;border-radius:11px;border:none;cursor:pointer;margin-bottom:12px;transition:all .25s;}
+    .adm-add-btn:hover{background:#E08C00;}
+
+    /* Page visibility */
+    .adm-page{display:none;}
+    .adm-page.active{display:block;}
+
+    /* Message cards */
+    .msg-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;margin-bottom:8px;}
+    .msg-card:hover{background:rgba(255,255,255,.04);}
+    .msg-card.unread{background:rgba(245,166,35,.04);border-color:rgba(245,166,35,.1);}
+    .msg-card-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+    .msg-name{font-weight:600;color:#fff;font-size:13px;}
+    .msg-email{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:4px;}
+    .msg-preview{font-size:12px;color:rgba(255,255,255,.55);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+    .msg-time{font-size:10px;color:rgba(255,255,255,.25);margin-top:6px;}
+
+    /* Prenotazione card */
+    .pren-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:14px;margin-bottom:8px;}
+    .pren-card.new-pren{background:rgba(245,166,35,.04);border-color:rgba(245,166,35,.12);}
+    .pren-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+    .pren-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E08C00);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0D0D0D;flex-shrink:0;}
+    .pren-name{font-weight:600;color:#fff;font-size:13px;}
+    .pren-meta{font-size:11px;color:rgba(255,255,255,.35);}
+    .pren-actions{display:flex;gap:6px;margin-top:10px;}
+
+    /* News editor */
+    .news-editor{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:16px;margin-bottom:12px;display:none;}
+    .news-editor.open{display:block;}
+    .input-dark{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;padding:12px 14px;border-radius:12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:all .2s;margin-bottom:10px;}
+    .input-dark::placeholder{color:rgba(255,255,255,.2);}
+    .input-dark:focus{border-color:rgba(245,166,35,.4);background:rgba(255,255,255,.06);}
+    .input-dark-ta{resize:none;height:80px;}
+
+    /* Galleria upload zone */
+    .upload-zone{border:2px dashed rgba(255,255,255,.1);border-radius:16px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;}
+    .upload-zone:hover{border-color:rgba(245,166,35,.4);background:rgba(245,166,35,.04);}
+    .gallery-adm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+    @media(min-width:480px){.gallery-adm-grid{grid-template-columns:repeat(3,1fr);}}
+    .gallery-adm-item{border-radius:14px;overflow:hidden;aspect-ratio:1;position:relative;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .gallery-adm-item:hover .gallery-adm-del{opacity:1;}
+    .gallery-adm-del{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:7px;background:rgba(239,68,68,.8);display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;transition:opacity .2s;cursor:pointer;}
+    .gallery-adm-type{position:absolute;bottom:6px;left:6px;font-size:9px;font-weight:700;background:rgba(0,0,0,.6);color:#fff;padding:2px 7px;border-radius:6px;text-transform:uppercase;}
+
+    /* Settings form */
+    .settings-section{background:#0F0F1C;border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:16px;margin-bottom:12px;}
+    .settings-section-title{font-size:11px;font-weight:700;color:#F5A623;text-transform:uppercase;letter-spacing:.15em;margin-bottom:14px;}
+    .settings-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    @media(max-width:360px){.settings-grid-2{grid-template-columns:1fr;}}
+    .settings-label{display:block;font-size:11px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+
+    /* Hornets card (dashboard) */
+    .hornets-card{background:linear-gradient(135deg,#F5A623,#E08C00);border-radius:18px;padding:18px;margin-bottom:12px;}
+    .hornets-card-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;color:#0D0D0D;margin-bottom:6px;}
+    .hornets-card-sub{font-size:12px;color:rgba(0,0,0,.6);margin-bottom:14px;line-height:1.4;}
+    .hornets-card-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);color:#0D0D0D;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;border:none;cursor:pointer;transition:background .2s;}
+    .hornets-card-btn:hover{background:rgba(0,0,0,.25);}
+
+    /* Toast */
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F0F1C;border:1px solid rgba(245,166,35,.3);color:#F5A623;font-size:12px;font-weight:600;padding:10px 18px;border-radius:12px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════ DEMO BAR ════════════════════ -->
+<div id="demo-bar">
+  <div class="demo-logo">🥋 <span>Hornets</span>&nbsp;TKD</div>
+  <div class="demo-mode-pills">
+    <button class="demo-pill active" onclick="switchMode('public')">🌐 Sito</button>
+    <button class="demo-pill" onclick="switchMode('admin')">⚙️ Admin</button>
+  </div>
+  <div class="demo-badge">DEMO</div>
+</div>
+
+<!-- ════════════════════ PUBLIC SITE ════════════════════ -->
+<div id="public-view" class="main-offset">
+
+  <nav id="pub-nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">Hornets <span>TKD</span></a>
+      <ul class="nav-links">
+        <li><a href="#corsi">Corsi</a></li>
+        <li><a href="#chi-siamo">Chi Siamo</a></li>
+        <li><a href="#galleria-pub">Galleria</a></li>
+        <li><a href="#news-pub">News</a></li>
+        <li><a href="#contatti">Contatti</a></li>
+      </ul>
+      <a href="#contatti" class="btn-yellow nav-cta" style="padding:10px 20px;font-size:13px;">Prova gratuita</a>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span id="ham-1"></span><span id="ham-2"></span><span id="ham-3"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="#corsi" onclick="closeMenu()">Corsi</a>
+    <a href="#chi-siamo" onclick="closeMenu()">Chi Siamo</a>
+    <a href="#galleria-pub" onclick="closeMenu()">Galleria</a>
+    <a href="#news-pub" onclick="closeMenu()">News</a>
+    <a href="#contatti" onclick="closeMenu()">Contatti</a>
+    <a href="#contatti" onclick="closeMenu()" class="btn-yellow" style="margin-top:16px;justify-content:center;">Prenota prova gratuita →</a>
+  </div>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-blob-1"></div><div class="hero-blob-2"></div><div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="fade-up" style="margin-bottom:28px;"><span class="section-label">ASD Hornets Taekwondo · Catanzaro</span></div>
+      <h1 class="hero-title fade-up-d1">Il Taekwondo che<br><span class="text-gradient underline-wave">trasforma</span><br>la tua vita</h1>
+      <p class="hero-sub fade-up-d2">Corsi per bambini, adulti e agonisti. Più di 15 anni di storia, oltre 200 atleti e 50 medaglie. Scopri la disciplina degli Hornets.</p>
+      <div class="hero-ctas fade-up-d3">
+        <a href="#contatti" class="btn-yellow">Prova gratuita →</a>
+        <a href="#corsi" class="btn-outline">Scopri i corsi</a>
+      </div>
+    </div>
+    <div class="scroll-hint" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
+      <span>Scopri</span><div class="scroll-arrow">↓</div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-num">200<span>+</span></div><div class="stat-label">Atleti attivi</div></div>
+      <div class="stat-item"><div class="stat-num">15<span>+</span></div><div class="stat-label">Anni di storia</div></div>
+      <div class="stat-item"><div class="stat-num">50<span>+</span></div><div class="stat-label">Medaglie</div></div>
+    </div>
+  </section>
+
+  <!-- Corsi -->
+  <section id="corsi">
+    <div class="section-header">
+      <span class="section-label">I Nostri Corsi</span>
+      <h2 class="section-title" style="margin-top:16px;">Un percorso per <span class="text-gradient">ogni atleta</span></h2>
+      <p class="section-sub">Ogni corso è progettato dai nostri maestri per garantire progressione, sicurezza e passione.</p>
+    </div>
+    <div class="corsi-grid">
+      <div class="corso-card">
+        <span class="corso-badge">Più richiesto</span>
+        <div class="corso-emoji" style="background:#FFF8EC;">🌟</div>
+        <div class="corso-nome">Bambini</div>
+        <div class="corso-tipo" style="color:#F5A623;">Taekwondo Bambini</div>
+        <p class="corso-desc">Coordinazione, disciplina e divertimento. Il primo passo nel mondo del Taekwondo in totale sicurezza.</p>
+        <div class="corso-info">
+          <div class="corso-info-item"><span style="color:#F5A623;">👥</span> 4 – 11 anni</div>
+          <div class="corso-info-item"><span style="color:#F5A623;">🕐</span> Lun / Mer 17:00 – 18:00</div>
+        </div>
+        <div class="corso-footer"><div class="corso-prezzo">€45<small>/mese</small></div><a href="#contatti" class="corso-link">Info →</a></div>
+      </div>
+      <div class="corso-card">
+        <div style="height:32px;"></div>
+        <div class="corso-emoji" style="background:#F0F2F5;">⚡</div>
+        <div class="corso-nome">Ragazzi</div>
+        <div class="corso-tipo" style="color:#0F0F1A;">Taekwondo Ragazzi</div>
+        <p class="corso-desc">Tecnica avanzata e mentalità agonistica per chi vuole fare sul serio.</p>
+        <div class="corso-info">
+          <div class="corso-info-item">👥 12 – 17 anni</div>
+          <div class="corso-info-item">🕐 Mar / Gio 17:30 – 19:00</div>
+        </div>
+        <div class="corso-footer"><div class="corso-prezzo">€50<small>/mese</small></div><a href="#contatti" class="corso-link" style="color:#0F0F1A;">Info →</a></div>
+      </div>
+      <div class="corso-card">
+        <div style="height:32px;"></div>
+        <div class="corso-emoji" style="background:#F7F8FA;">💪</div>
+        <div class="corso-nome">Adulti</div>
+        <div class="corso-tipo" style="color:#0F0F1A;">Taekwondo Adulti</div>
+        <p class="corso-desc">Fitness, autodifesa e crescita personale. Non è mai troppo tardi per iniziare.</p>
+        <div class="corso-info">
+          <div class="corso-info-item">👥 18+ anni</div>
+          <div class="corso-info-item">🕐 Mar / Gio 19:00 – 20:30</div>
+        </div>
+        <div class="corso-footer"><div class="corso-prezzo">€55<small>/mese</small></div><a href="#contatti" class="corso-link" style="color:#0F0F1A;">Info →</a></div>
+      </div>
+      <div class="corso-card">
+        <span class="corso-badge">Alta intensità</span>
+        <div class="corso-emoji" style="background:#FFF8EC;">🏆</div>
+        <div class="corso-nome">Agonisti</div>
+        <div class="corso-tipo" style="color:#F5A623;">Taekwondo Agonisti</div>
+        <p class="corso-desc">Preparazione élite per atleti che vogliono conquistare podi regionali e nazionali.</p>
+        <div class="corso-info">
+          <div class="corso-info-item"><span style="color:#F5A623;">👥</span> 14 – 35 anni</div>
+          <div class="corso-info-item"><span style="color:#F5A623;">🕐</span> Lun / Mer 20:30 + Sab 10:00</div>
+        </div>
+        <div class="corso-footer"><div class="corso-prezzo">€70<small>/mese</small></div><a href="#contatti" class="corso-link">Info →</a></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px;">
+      <p style="font-size:14px;color:#6B7280;margin-bottom:16px;">Non sai quale corso fa per te?</p>
+      <a href="#contatti" class="btn-yellow">Prenota una prova gratuita →</a>
+    </div>
+  </section>
+
+  <!-- Chi Siamo -->
+  <section id="chi-siamo">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="chi-grid">
+        <div>
+          <span class="section-label">Chi Siamo</span>
+          <h2 class="section-title" style="margin-top:16px;margin-bottom:12px;">Una famiglia unita<br><span class="text-gradient">dalla cintura nera</span></h2>
+          <div style="width:48px;height:4px;background:#F5A623;border-radius:99px;margin-bottom:24px;"></div>
+          <div style="display:flex;flex-direction:column;gap:12px;color:#6B7280;font-size:15px;line-height:1.7;margin-bottom:20px;">
+            <p>Gli <strong style="color:#0D0D0D;">Hornets Taekwondo</strong> nascono a Catanzaro nel 2009 con un sogno: portare l'arte marziale coreana nel cuore della Calabria, forgiando campioni non solo nello sport, ma nella vita.</p>
+            <p>Sotto la guida del <strong style="color:#0D0D0D;">Maestro Antonio Rossi, IV Dan WTF</strong>, la nostra squadra ha conquistato decine di medaglie a livello regionale e nazionale.</p>
+          </div>
+          <div class="check-list">
+            <div class="check-item">✅ Maestri certificati FITA con esperienza internazionale</div>
+            <div class="check-item">✅ Programmi personalizzati per ogni livello e fascia d'età</div>
+            <div class="check-item">✅ Ambiente familiare, inclusivo e motivante</div>
+            <div class="check-item">✅ Partecipazione a gare regionali, nazionali e internazionali</div>
+          </div>
+          <div class="chi-values">
+            <div class="chi-val"><div class="chi-val-icon" style="background:#FFF8EC;">🎯</div><div class="chi-val-label">Disciplina</div></div>
+            <div class="chi-val"><div class="chi-val-icon" style="background:#F0F2F5;">❤️</div><div class="chi-val-label">Passione</div></div>
+            <div class="chi-val"><div class="chi-val-icon" style="background:#FFF8EC;">🏅</div><div class="chi-val-label">Eccellenza</div></div>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <div class="chi-img-main"><span style="font-size:80px;opacity:.5;">🥋</span></div>
+          <div class="chi-img-badge"><div class="chi-img-badge-num">2009</div><div class="chi-img-badge-label">Fondazione</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galleria -->
+  <section id="galleria-pub">
+    <div class="section-header">
+      <span class="section-label">Galleria</span>
+      <h2 class="section-title" style="margin-top:16px;">La nostra <span class="text-gradient">storia in immagini</span></h2>
+    </div>
+    <div class="gallery-grid" style="max-width:1100px;margin:0 auto;">
+      <div class="gallery-item" style="aspect-ratio:16/9;" onclick="showToast('📸 Galleria completa nell\'app!')">
+        <div style="background:linear-gradient(135deg,#0F0F1A,#1A1A2E);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.6;">🥋</div>
+        <div class="gallery-overlay"><span>Allenamento – Gen 2025</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa nell\'app!')">
+        <div style="background:linear-gradient(135deg,#1a0a00,#3d1a00);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:.7;">🏆</div>
+        <div class="gallery-overlay"><span>Gara Regionale 2024</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa nell\'app!')">
+        <div style="background:linear-gradient(135deg,#0a1a0a,#0d2e0d);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:.7;">🎖️</div>
+        <div class="gallery-overlay"><span>Premiazione Campioni</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa nell\'app!')">
+        <div style="background:linear-gradient(135deg,#1a001a,#2e002e);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:.7;">👊</div>
+        <div class="gallery-overlay"><span>Stage Nazionale</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa nell\'app!')">
+        <div style="background:linear-gradient(135deg,#001a1a,#002e2e);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:.7;">🌟</div>
+        <div class="gallery-overlay"><span>Esame Cinture – Mar 2025</span></div>
+      </div>
+      <div class="gallery-item" onclick="showToast('📸 Galleria completa nell\'app!')">
+        <div style="background:linear-gradient(135deg,#1a1000,#2e1e00);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:.7;">🤸</div>
+        <div class="gallery-overlay"><span>Allenamento Bambini</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <button onclick="showToast('📷 Segui @hornets.tkd su Instagram!')" class="btn-outline">Vedi tutta la galleria</button>
+    </div>
+  </section>
+
+  <!-- News -->
+  <section id="news-pub">
+    <div class="section-header">
+      <span class="section-label">Ultime News</span>
+      <h2 class="section-title" style="margin-top:16px;">Sempre <span class="text-gradient">aggiornati</span></h2>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#0F0F1A,#1A1A2E);">🏆</div>
+        <div class="news-body">
+          <span class="news-tag">Risultati</span>
+          <h3 class="news-title">Campionato Regionale Calabria: 5 medaglie per gli Hornets!</h3>
+          <p class="news-excerpt">I nostri atleti tornano a casa con un oro, due argenti e due bronzi dalla gara di Reggio Calabria.</p>
+          <div class="news-date">📅 15 Aprile 2025</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#1a0a00,#3d2000);">🎓</div>
+        <div class="news-body">
+          <span class="news-tag">Corsi</span>
+          <h3 class="news-title">Nuovo corso Master aperto: iscrizioni fino al 31 maggio</h3>
+          <p class="news-excerpt">Per i praticanti con cintura nera che vogliono approfondire tecnica e filosofia del Taekwondo.</p>
+          <div class="news-date">📅 2 Maggio 2025</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#001a08,#003018);">📣</div>
+        <div class="news-body">
+          <span class="news-tag">Eventi</span>
+          <h3 class="news-title">Stage estivo con il Maestro Park: prenotazioni aperte</h3>
+          <p class="news-excerpt">Dal 14 al 16 luglio uno stage internazionale presso la nostra palestra. Posti limitati!</p>
+          <div class="news-date">📅 8 Maggio 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contatti -->
+  <section id="contatti">
+    <div class="contatti-blob"></div>
+    <div class="contatti-inner">
+      <div class="contatti-grid">
+        <div>
+          <span class="section-label" style="background:rgba(245,166,35,.1);color:#F5A623;">Contattaci</span>
+          <h2 class="contatti-title" style="margin-top:16px;">Inizia il tuo<br>percorso oggi</h2>
+          <p class="contatti-sub">La prima lezione è gratuita. Vieni a trovarci o scrivici: ti risponderemo entro 24 ore.</p>
+          <div class="contatti-info">
+            <div class="contatti-info-item"><div class="contatti-info-icon">📍</div><div><strong style="color:#fff;display:block;">Sede</strong>Via Roma 45, Catanzaro (CZ)</div></div>
+            <div class="contatti-info-item"><div class="contatti-info-icon">📞</div><div><strong style="color:#fff;display:block;">Telefono</strong>+39 0961 123456</div></div>
+            <div class="contatti-info-item"><div class="contatti-info-icon">✉️</div><div><strong style="color:#fff;display:block;">Email</strong>info@hornetstkd.it</div></div>
+            <div class="contatti-info-item"><div class="contatti-info-icon">🕐</div><div><strong style="color:#fff;display:block;">Orari segreteria</strong>Lun–Ven 16:00 – 21:00</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px;">
+            <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:#fff;margin-bottom:20px;">Prenota una prova gratuita</h3>
+            <form id="contact-form" onsubmit="submitForm(event)">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-field"><label class="form-label">Nome</label><input class="form-input" type="text" placeholder="Mario" required /></div>
+                <div class="form-field"><label class="form-label">Cognome</label><input class="form-input" type="text" placeholder="Rossi" required /></div>
+              </div>
+              <div class="form-field"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="mario@email.it" required /></div>
+              <div class="form-field"><label class="form-label">Telefono</label><input class="form-input" type="tel" placeholder="+39 333 123 4567" /></div>
+              <div class="form-field">
+                <label class="form-label">Corso di interesse</label>
+                <select class="form-input" style="cursor:pointer;appearance:none;">
+                  <option style="background:#0F0F1C;" value="">Seleziona un corso...</option>
+                  <option style="background:#0F0F1C;">Bambini (4-11 anni)</option>
+                  <option style="background:#0F0F1C;">Ragazzi (12-17 anni)</option>
+                  <option style="background:#0F0F1C;">Adulti (18+)</option>
+                  <option style="background:#0F0F1C;">Agonisti (14-35 anni)</option>
+                </select>
+              </div>
+              <div class="form-field"><label class="form-label">Messaggio (opzionale)</label><textarea class="form-input form-textarea" placeholder="Scrivi qui eventuali domande..."></textarea></div>
+              <button type="submit" class="btn-yellow" style="width:100%;justify-content:center;padding:16px;">Invia richiesta →</button>
+            </form>
+            <div class="form-success" id="form-success">✅ Richiesta inviata! Ti contatteremo entro 24 ore.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="footer-logo">Hornets <span>TKD</span></div>
+    <div class="footer-sub">ASD Hornets Taekwondo · Catanzaro, Calabria</div>
+    <div class="footer-links">
+      <a href="#corsi">Corsi</a><a href="#chi-siamo">Chi Siamo</a><a href="#galleria-pub">Galleria</a><a href="#news-pub">News</a><a href="#contatti">Contatti</a>
+    </div>
+    <div class="footer-copy">© 2025 ASD Hornets Taekwondo. Tutti i diritti riservati.</div>
+  </footer>
+</div>
+
+<!-- ════════════════════ ADMIN PANEL ════════════════════ -->
+<div id="admin-view">
+
+  <!-- Login -->
+  <div id="admin-login">
+    <div class="login-card">
+      <div class="login-logo">Hornets <span>TKD</span></div>
+      <div class="login-sub">Backoffice Amministratori</div>
+      <div class="login-hint">💡 <span><strong>Demo:</strong> qualsiasi credenziale funziona</span></div>
+      <form onsubmit="doLogin(event)">
+        <div class="login-field"><label class="login-label">Email</label><input class="login-input" type="email" value="admin@hornetstkd.it" /></div>
+        <div class="login-field"><label class="login-label">Password</label><input class="login-input" type="password" value="password123" /></div>
+        <button type="submit" class="login-btn">Accedi al pannello →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin shell -->
+  <div id="admin-shell">
+
+    <!-- Sidebar (desktop only) -->
+    <aside class="adm-sidebar">
+      <div class="adm-sidebar-logo">
+        <div class="adm-sidebar-logo-icon">🥋</div>
+        <div class="adm-sidebar-logo-text">Hornets <span>TKD</span></div>
+      </div>
+      <nav class="adm-sidebar-nav">
+        <button class="adm-sidebar-item active" id="sbar-dashboard" onclick="showAdmPage('dashboard')"><span class="adm-sidebar-icon">📊</span><span class="adm-sidebar-label">Dashboard</span></button>
+        <button class="adm-sidebar-item" id="sbar-corsi" onclick="showAdmPage('corsi')"><span class="adm-sidebar-icon">🥋</span><span class="adm-sidebar-label">Corsi</span></button>
+        <button class="adm-sidebar-item" id="sbar-prenotazioni" onclick="showAdmPage('prenotazioni')"><span class="adm-sidebar-icon">📝</span><span class="adm-sidebar-label">Prenotazioni</span></button>
+        <button class="adm-sidebar-item" id="sbar-messaggi" onclick="showAdmPage('messaggi')"><span class="adm-sidebar-icon">✉️</span><span class="adm-sidebar-label">Messaggi</span></button>
+        <button class="adm-sidebar-item" id="sbar-galleria" onclick="showAdmPage('galleria')"><span class="adm-sidebar-icon">🖼️</span><span class="adm-sidebar-label">Galleria</span></button>
+        <button class="adm-sidebar-item" id="sbar-news" onclick="showAdmPage('news')"><span class="adm-sidebar-icon">📰</span><span class="adm-sidebar-label">News</span></button>
+        <button class="adm-sidebar-item" id="sbar-impostazioni" onclick="showAdmPage('impostazioni')"><span class="adm-sidebar-icon">⚙️</span><span class="adm-sidebar-label">Impostazioni</span></button>
+      </nav>
+      <div class="adm-sidebar-footer">
+        <div class="adm-sidebar-user" onclick="doLogout()">
+          <div class="adm-sidebar-user-avatar">AR</div>
+          <div class="adm-sidebar-user-info">
+            <div class="adm-sidebar-user-name">Antonio Rossi</div>
+            <div class="adm-sidebar-user-role">Amministratore · Esci</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main area (topbar + content) -->
+    <div class="adm-main">
+
+    <div class="adm-topbar">
+      <div class="adm-topbar-title" id="adm-page-title">Dashboard</div>
+      <div class="adm-topbar-right">
+        <div class="adm-notif" onclick="showToast('🔔 3 nuove notifiche')">🔔<div class="adm-notif-dot"></div></div>
+        <div class="adm-avatar" onclick="doLogout()" title="Logout">AR</div>
+      </div>
+    </div>
+
+    <div class="adm-content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="adm-page active" id="page-dashboard">
+
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:20px;color:#fff;">Buongiorno, Antonio 👋</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:3px;">Lunedì, 12 Maggio 2025</div>
+        </div>
+
+        <!-- 3 stat cards matching real app: Corsi, Messaggi Nuovi, Prenotazioni Nuove -->
+        <div class="adm-stats">
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">🥋</div>
+            <div class="adm-stat-num">4</div>
+            <div class="adm-stat-label">Corsi attivi</div>
+            <div class="adm-stat-delta up">▲ +1</div>
+          </div>
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">✉️</div>
+            <div class="adm-stat-num">8</div>
+            <div class="adm-stat-label">Messaggi nuovi</div>
+            <div class="adm-stat-delta red">● Non letti</div>
+          </div>
+          <div class="adm-stat-card">
+            <div class="adm-stat-icon">📝</div>
+            <div class="adm-stat-num">3</div>
+            <div class="adm-stat-label">Prenotazioni nuove</div>
+            <div class="adm-stat-delta new">● In attesa</div>
+          </div>
+        </div>
+
+        <!-- Quick actions 6-grid -->
+        <div class="adm-card" style="padding:14px;">
+          <div class="adm-card-title" style="margin-bottom:10px;">Azioni rapide</div>
+          <div class="adm-quick-grid">
+            <button class="adm-quick-btn" onclick="showAdmPage('corsi')"><div class="adm-quick-icon">🥋</div><div class="adm-quick-label">Gestisci corsi</div></button>
+            <button class="adm-quick-btn" onclick="showAdmPage('prenotazioni')"><div class="adm-quick-icon">📝</div><div class="adm-quick-label">Prenotazioni</div></button>
+            <button class="adm-quick-btn" onclick="showAdmPage('messaggi')"><div class="adm-quick-icon">✉️</div><div class="adm-quick-label">Leggi messaggi</div></button>
+            <button class="adm-quick-btn" onclick="showAdmPage('galleria')"><div class="adm-quick-icon">🖼️</div><div class="adm-quick-label">Carica media</div></button>
+            <button class="adm-quick-btn" onclick="showAdmPage('news')"><div class="adm-quick-icon">📰</div><div class="adm-quick-label">Pubblica news</div></button>
+            <button class="adm-quick-btn" onclick="showAdmPage('impostazioni')"><div class="adm-quick-icon">⚙️</div><div class="adm-quick-label">Configura sito</div></button>
+          </div>
+        </div>
+
+        <!-- Hornets branded card -->
+        <div class="hornets-card">
+          <div class="hornets-card-title">🥋 Hornets Taekwondo</div>
+          <div class="hornets-card-sub">Il tuo sito è online e funzionante. Clicca per visualizzarlo.</div>
+          <button class="hornets-card-btn" onclick="switchMode('public')">↗ Vedi sito pubblico</button>
+        </div>
+
+        <!-- Activity -->
+        <div class="adm-card">
+          <div class="adm-card-title">Attività recente <span class="adm-card-action" onclick="showToast('📊 Report completo in arrivo!')">Vedi tutto</span></div>
+          <div class="activity-list">
+            <div class="activity-item"><div class="activity-dot" style="background:#F5A623;"></div><div class="activity-body"><div class="activity-text">Nuova prenotazione prova da <strong style="color:#fff;">Luca Ferraro</strong> (Ragazzi)</div><div class="activity-time">5 min fa</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#4ade80;"></div><div class="activity-body"><div class="activity-text"><strong style="color:#fff;">Sofia Marino</strong> ha completato l'iscrizione al corso Adulti</div><div class="activity-time">1 ora fa</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#a5b4fc;"></div><div class="activity-body"><div class="activity-text">Nuovo messaggio da <strong style="color:#fff;">Marco Esposito</strong>: informazioni sui corsi</div><div class="activity-time">3 ore fa</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#F5A623;"></div><div class="activity-body"><div class="activity-text">Prenotazione prova da <strong style="color:#fff;">Anna Conti</strong> (Bambini)</div><div class="activity-time">Ieri 18:42</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#4ade80;"></div><div class="activity-body"><div class="activity-text">Articolo pubblicato: <strong style="color:#fff;">Stage estivo con Maestro Park</strong></div><div class="activity-time">Ieri 10:15</div></div></div>
+          </div>
+        </div>
+
+        <!-- Occupancy bars -->
+        <div class="adm-card">
+          <div class="adm-card-title">Occupazione corsi <span class="adm-card-action" onclick="showAdmPage('corsi')">Gestisci</span></div>
+          <div class="bar-row"><div class="bar-row-header"><span class="bar-row-name">🌟 Bambini</span><span class="bar-row-count">18 / 25</span></div><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div></div>
+          <div class="bar-row"><div class="bar-row-header"><span class="bar-row-name">⚡ Ragazzi</span><span class="bar-row-count">12 / 20</span></div><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div></div>
+          <div class="bar-row"><div class="bar-row-header"><span class="bar-row-name">💪 Adulti</span><span class="bar-row-count">11 / 20</span></div><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div></div>
+          <div class="bar-row" style="margin-bottom:0"><div class="bar-row-header"><span class="bar-row-name">🏆 Agonisti</span><span class="bar-row-count">6 / 15</span></div><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── CORSI ── -->
+      <div class="adm-page" id="page-corsi">
+        <button class="adm-add-btn" onclick="showToast('➕ Nuovo corso: funzione disponibile nell\'app completa')">+ Aggiungi corso</button>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:12px;">4 attivi · 1 inattivo</div>
+        <div class="adm-card" style="padding:0;overflow:hidden;">
+          <div class="table-scroll">
+            <table class="adm-table">
+              <thead><tr><th>Corso</th><th>Età</th><th>Orari</th><th>Iscritti</th><th>Prezzo</th><th>Stato</th><th>Azioni</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:#fff;">🌟 Bambini</strong></td>
+                  <td>4–11</td><td>Lun/Mer 17:00</td>
+                  <td><span style="color:#4ade80;font-weight:700;">18</span><span style="color:rgba(255,255,255,.3);">/25</span></td>
+                  <td>€45</td>
+                  <td><span class="pill pill-active">Attivo</span></td>
+                  <td><div style="display:flex;gap:5px;"><button class="adm-action-btn" onclick="showToast('✏️ Modifica Bambini')">Modifica</button><button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:#fff;">⚡ Ragazzi</strong></td>
+                  <td>12–17</td><td>Mar/Gio 17:30</td>
+                  <td><span style="color:#4ade80;font-weight:700;">12</span><span style="color:rgba(255,255,255,.3);">/20</span></td>
+                  <td>€50</td>
+                  <td><span class="pill pill-active">Attivo</span></td>
+                  <td><div style="display:flex;gap:5px;"><button class="adm-action-btn" onclick="showToast('✏️ Modifica Ragazzi')">Modifica</button><button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:#fff;">💪 Adulti</strong></td>
+                  <td>18+</td><td>Mar/Gio 19:00</td>
+                  <td><span style="color:#F5A623;font-weight:700;">11</span><span style="color:rgba(255,255,255,.3);">/20</span></td>
+                  <td>€55</td>
+                  <td><span class="pill pill-active">Attivo</span></td>
+                  <td><div style="display:flex;gap:5px;"><button class="adm-action-btn" onclick="showToast('✏️ Modifica Adulti')">Modifica</button><button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:#fff;">🏆 Agonisti</strong></td>
+                  <td>14–35</td><td>Lun/Mer 20:30</td>
+                  <td><span style="color:#F5A623;font-weight:700;">6</span><span style="color:rgba(255,255,255,.3);">/15</span></td>
+                  <td>€70</td>
+                  <td><span class="pill pill-active">Attivo</span></td>
+                  <td><div style="display:flex;gap:5px;"><button class="adm-action-btn" onclick="showToast('✏️ Modifica Agonisti')">Modifica</button><button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:rgba(255,255,255,.4);">⭐ Master</strong></td>
+                  <td>18+</td><td>Sab 10:00</td>
+                  <td><span style="color:rgba(255,255,255,.4);">0</span><span style="color:rgba(255,255,255,.2);">/10</span></td>
+                  <td>€80</td>
+                  <td><span class="pill pill-inactive">Inattivo</span></td>
+                  <td><div style="display:flex;gap:5px;"><button class="adm-action-btn yellow" onclick="showToast('✅ Corso attivato!')">Attiva</button><button class="adm-action-btn danger" onclick="showToast('🚫 Elimina')">Elimina</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PRENOTAZIONI ── -->
+      <div class="adm-page" id="page-prenotazioni">
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:12px;">3 nuove · 2 confermate</div>
+        <div class="pren-card new-pren">
+          <div class="pren-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="pren-avatar">LF</div>
+              <div><div class="pren-name">Luca Ferraro</div><div class="pren-meta">+39 340 123 4567 · Corso: Ragazzi</div></div>
+            </div>
+            <span class="pill pill-new">Nuova</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);">📅 12 Mag 2025, 14:32</div>
+          <div class="pren-actions">
+            <button class="adm-action-btn yellow" style="flex:1;" onclick="showToast('✅ Confermata per Luca Ferraro!')">✓ Conferma</button>
+            <button class="adm-action-btn" onclick="showToast('ℹ️ Completata')">Completata</button>
+            <button class="adm-action-btn danger" onclick="showToast('❌ Annullata')">✗ Annulla</button>
+          </div>
+        </div>
+        <div class="pren-card new-pren">
+          <div class="pren-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="pren-avatar">AC</div>
+              <div><div class="pren-name">Anna Conti</div><div class="pren-meta">+39 347 987 6543 · Corso: Bambini</div></div>
+            </div>
+            <span class="pill pill-new">Nuova</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);">📅 11 Mag 2025, 18:15</div>
+          <div class="pren-actions">
+            <button class="adm-action-btn yellow" style="flex:1;" onclick="showToast('✅ Confermata per Anna Conti!')">✓ Conferma</button>
+            <button class="adm-action-btn" onclick="showToast('ℹ️ Completata')">Completata</button>
+            <button class="adm-action-btn danger" onclick="showToast('❌ Annullata')">✗ Annulla</button>
+          </div>
+        </div>
+        <div class="pren-card new-pren">
+          <div class="pren-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="pren-avatar">GR</div>
+              <div><div class="pren-name">Giulia Russo</div><div class="pren-meta">+39 329 555 1234 · Corso: Adulti</div></div>
+            </div>
+            <span class="pill pill-new">Nuova</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);">📅 10 Mag 2025, 09:04</div>
+          <div class="pren-actions">
+            <button class="adm-action-btn yellow" style="flex:1;" onclick="showToast('✅ Confermata per Giulia Russo!')">✓ Conferma</button>
+            <button class="adm-action-btn" onclick="showToast('ℹ️ Completata')">Completata</button>
+            <button class="adm-action-btn danger" onclick="showToast('❌ Annullata')">✗ Annulla</button>
+          </div>
+        </div>
+        <div class="pren-card">
+          <div class="pren-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="pren-avatar">DR</div>
+              <div><div class="pren-name">Davide Romano</div><div class="pren-meta">Corso: Adulti</div></div>
+            </div>
+            <span class="pill pill-ok">Confermata</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);">📅 Confermata per Gio 15 Mag, 19:00</div>
+        </div>
+        <div class="pren-card">
+          <div class="pren-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="pren-avatar">EG</div>
+              <div><div class="pren-name">Elena Gallo</div><div class="pren-meta">Corso: Bambini</div></div>
+            </div>
+            <span class="pill pill-done">Completata</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);">📅 Completata il Mer 7 Mag, 17:00</div>
+        </div>
+      </div>
+
+      <!-- ── MESSAGGI ── -->
+      <div class="adm-page" id="page-messaggi">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:11px;color:rgba(255,255,255,.3);">8 nuovi · 4 letti</div>
+          <button class="adm-action-btn" onclick="showToast('✅ Tutti segnati come letti')">Segna tutti letti</button>
+        </div>
+        <div class="msg-card unread" onclick="showToast('📧 Apertura messaggio...')">
+          <div class="msg-card-header"><div class="msg-name">Marco Esposito</div><span class="pill pill-new">Nuovo</span></div>
+          <div class="msg-email">marco.esposito@gmail.com</div>
+          <div class="msg-preview">Salve, vorrei informazioni sui corsi per adulti. Sono un principiante assoluto ma sono molto motivato...</div>
+          <div class="msg-time">3 ore fa</div>
+        </div>
+        <div class="msg-card unread" onclick="showToast('📧 Apertura messaggio...')">
+          <div class="msg-card-header"><div class="msg-name">Giulia Ricci</div><span class="pill pill-new">Nuovo</span></div>
+          <div class="msg-email">g.ricci@email.it</div>
+          <div class="msg-preview">Mia figlia ha 8 anni, è possibile iscriverla al corso bambini? Vorrei sapere i costi...</div>
+          <div class="msg-time">Ieri 19:30</div>
+        </div>
+        <div class="msg-card" onclick="showToast('📧 Apertura messaggio...')">
+          <div class="msg-card-header"><div class="msg-name">Roberto Bianchi</div><span class="pill pill-read">Letto</span></div>
+          <div class="msg-email">r.bianchi@libero.it</div>
+          <div class="msg-preview">Quante lezioni sono incluse nella quota mensile? C'è possibilità di fare un mese di prova?</div>
+          <div class="msg-time">2 gg fa</div>
+        </div>
+        <div class="msg-card" onclick="showToast('📧 Messaggio già risposto')">
+          <div class="msg-card-header"><div class="msg-name">Carmela Vitale</div><span class="pill pill-replied">Risposto</span></div>
+          <div class="msg-email">carmela.v@hotmail.it</div>
+          <div class="msg-preview">Grazie mille per le informazioni! Ci vediamo martedì per la prova gratuita.</div>
+          <div class="msg-time">3 gg fa</div>
+        </div>
+        <div class="msg-card" onclick="showToast('📧 Archiviato')">
+          <div class="msg-card-header"><div class="msg-name">Francesco Mele</div><span class="pill" style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);">Archiviato</span></div>
+          <div class="msg-email">f.mele@yahoo.it</div>
+          <div class="msg-preview">Buongiorno, cercavo informazioni sul corso agonisti per mio figlio di 16 anni.</div>
+          <div class="msg-time">1 sett. fa</div>
+        </div>
+      </div>
+
+      <!-- ── GALLERIA ── -->
+      <div class="adm-page" id="page-galleria">
+        <div class="upload-zone" onclick="showToast('📁 Seleziona file: funzione disponibile nell\'app completa')">
+          <div style="font-size:36px;margin-bottom:10px;">📤</div>
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:6px;">Carica foto o video</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.35);">Trascina qui o clicca per selezionare · max 10MB</div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px;">6 file caricati</div>
+        <div class="gallery-adm-grid">
+          <div class="gallery-adm-item" onclick="showToast('🗑️ Elimina: funzione disponibile nell\'app')">
+            <div style="font-size:2rem;opacity:.6;">🥋</div>
+            <div class="gallery-adm-del">✕</div>
+            <div class="gallery-adm-type">foto</div>
+          </div>
+          <div class="gallery-adm-item" onclick="showToast('🗑️ Elimina: funzione disponibile nell\'app')">
+            <div style="font-size:2rem;opacity:.6;">🏆</div>
+            <div class="gallery-adm-del">✕</div>
+            <div class="gallery-adm-type">foto</div>
+          </div>
+          <div class="gallery-adm-item" onclick="showToast('🗑️ Elimina: funzione disponibile nell\'app')">
+            <div style="font-size:2rem;opacity:.6;">🎖️</div>
+            <div class="gallery-adm-del">✕</div>
+            <div class="gallery-adm-type">foto</div>
+          </div>
+          <div class="gallery-adm-item" onclick="showToast('🗑️ Elimina: funzione disponibile nell\'app')">
+            <div style="font-size:2rem;opacity:.6;">🎬</div>
+            <div class="gallery-adm-del">✕</div>
+            <div class="gallery-adm-type">video</div>
+          </div>
+          <div class="gallery-adm-item" onclick="showToast('🗑️ Elimina: funzione disponibile nell\'app')">
+            <div style="font-size:2rem;opacity:.6;">🌟</div>
+            <div class="gallery-adm-del">✕</div>
+            <div class="gallery-adm-type">foto</div>
+          </div>
+          <div class="gallery-adm-item" onclick="showToast('🗑️ Elimina: funzione disponibile nell\'app')">
+            <div style="font-size:2rem;opacity:.6;">🤸</div>
+            <div class="gallery-adm-del">✕</div>
+            <div class="gallery-adm-type">foto</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NEWS ── -->
+      <div class="adm-page" id="page-news">
+        <button class="adm-add-btn" onclick="toggleEditor()">+ Nuovo articolo</button>
+
+        <!-- Inline editor -->
+        <div class="news-editor" id="news-editor">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:12px;">Nuovo articolo</div>
+          <input class="input-dark" type="text" placeholder="Titolo *" />
+          <textarea class="input-dark input-dark-ta" placeholder="Estratto / anteprima..."></textarea>
+          <textarea class="input-dark" style="height:120px;resize:none;" placeholder="Contenuto completo (HTML supportato: &lt;b&gt;, &lt;i&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;p&gt;)..."></textarea>
+          <input class="input-dark" type="text" placeholder="Tag (separati da virgola): es. risultati, gare" />
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.6);">
+              <input type="checkbox" checked style="accent-color:#F5A623;" /> Pubblica subito
+            </label>
+            <div style="display:flex;gap:8px;">
+              <button class="adm-action-btn" onclick="toggleEditor()">Annulla</button>
+              <button class="adm-action-btn yellow" onclick="showToast('✅ Articolo salvato!')">Salva</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px;">3 pubblicati · 1 bozza</div>
+
+        <!-- News list -->
+        <div class="adm-card" style="margin-bottom:10px;cursor:pointer;" onclick="showToast('✏️ Apri editor articolo')">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="flex:1;min-width:0;">
+              <span class="pill pill-pub" style="margin-bottom:6px;">Pubblicato</span>
+              <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:4px;line-height:1.3;">Campionato Regionale Calabria: 5 medaglie!</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">I nostri atleti tornano a casa con un oro, due argenti e due bronzi...</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:4px;">15 Apr 2025 · Admin</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('✏️ Modifica')">✏️</button>
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('👁️ Bozza')">👁️</button>
+              <button class="adm-action-btn danger" onclick="event.stopPropagation();showToast('🗑️ Eliminato')">🗑️</button>
+            </div>
+          </div>
+        </div>
+        <div class="adm-card" style="margin-bottom:10px;cursor:pointer;" onclick="showToast('✏️ Apri editor articolo')">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="flex:1;min-width:0;">
+              <span class="pill pill-pub" style="margin-bottom:6px;">Pubblicato</span>
+              <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:4px;line-height:1.3;">Nuovo corso Master: iscrizioni fino al 31 maggio</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">Per i praticanti con cintura nera che vogliono approfondire...</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:4px;">2 Mag 2025 · Admin</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('✏️ Modifica')">✏️</button>
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('👁️ Bozza')">👁️</button>
+              <button class="adm-action-btn danger" onclick="event.stopPropagation();showToast('🗑️ Eliminato')">🗑️</button>
+            </div>
+          </div>
+        </div>
+        <div class="adm-card" style="margin-bottom:10px;cursor:pointer;" onclick="showToast('✏️ Apri editor articolo')">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="flex:1;min-width:0;">
+              <span class="pill pill-pub" style="margin-bottom:6px;">Pubblicato</span>
+              <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:4px;line-height:1.3;">Stage estivo con il Maestro Park: prenotazioni aperte</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">Dal 14 al 16 luglio uno stage internazionale...</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:4px;">8 Mag 2025 · Admin</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('✏️ Modifica')">✏️</button>
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('👁️ Bozza')">👁️</button>
+              <button class="adm-action-btn danger" onclick="event.stopPropagation();showToast('🗑️ Eliminato')">🗑️</button>
+            </div>
+          </div>
+        </div>
+        <div class="adm-card" style="cursor:pointer;opacity:.7;" onclick="showToast('✏️ Apri editor articolo')">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="flex:1;min-width:0;">
+              <span class="pill pill-draft" style="margin-bottom:6px;">Bozza</span>
+              <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,.6);margin-bottom:4px;line-height:1.3;">Riepilogo stagione 2024-2025 (bozza)</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">Un anno straordinario pieno di successi e nuovi atleti...</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.2);margin-top:4px;">Non pubblicato · Admin</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <button class="adm-action-btn" onclick="event.stopPropagation();showToast('✏️ Modifica')">✏️</button>
+              <button class="adm-action-btn yellow" onclick="event.stopPropagation();showToast('✅ Pubblicato!')">👁️</button>
+              <button class="adm-action-btn danger" onclick="event.stopPropagation();showToast('🗑️ Eliminato')">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── IMPOSTAZIONI ── -->
+      <div class="adm-page" id="page-impostazioni">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+          <button class="adm-action-btn yellow" onclick="showToast('✅ Impostazioni salvate!')">💾 Salva modifiche</button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Hero Section</div>
+          <label class="settings-label">Titolo principale</label>
+          <input class="input-dark" type="text" value="Il Taekwondo che trasforma la tua vita" />
+          <label class="settings-label">Sottotitolo</label>
+          <textarea class="input-dark" style="height:64px;resize:none;">Corsi per bambini, adulti e agonisti. Più di 15 anni di storia, oltre 200 atleti e 50 medaglie.</textarea>
+          <label class="settings-label">Testo bottone CTA</label>
+          <input class="input-dark" type="text" value="Prenota una prova gratuita" />
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Chi Siamo</div>
+          <label class="settings-label">Testo descrizione</label>
+          <textarea class="input-dark" style="height:100px;resize:none;">Gli Hornets Taekwondo nascono a Catanzaro nel 2009 con un sogno: portare l'arte marziale coreana nel cuore della Calabria...</textarea>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Informazioni di Contatto</div>
+          <div class="settings-grid-2">
+            <div>
+              <label class="settings-label">Indirizzo</label>
+              <input class="input-dark" type="text" value="Via Roma 45, Catanzaro" />
+            </div>
+            <div>
+              <label class="settings-label">Telefono</label>
+              <input class="input-dark" type="text" value="+39 0961 123456" />
+            </div>
+          </div>
+          <label class="settings-label">Email</label>
+          <input class="input-dark" type="email" value="info@hornetstkd.it" />
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Social Media</div>
+          <div class="settings-grid-2">
+            <div>
+              <label class="settings-label">Instagram</label>
+              <input class="input-dark" type="url" placeholder="https://instagram.com/..." />
+            </div>
+            <div>
+              <label class="settings-label">Facebook</label>
+              <input class="input-dark" type="url" placeholder="https://facebook.com/..." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .adm-content -->
+
+    <!-- Bottom nav — 7 items, scrollable -->
+    <nav class="adm-bottom-nav">
+      <button class="adm-nav-item active" id="nav-dashboard" onclick="showAdmPage('dashboard')">
+        <span class="adm-nav-icon">📊</span><span class="adm-nav-label">Dashboard</span>
+      </button>
+      <button class="adm-nav-item" id="nav-corsi" onclick="showAdmPage('corsi')">
+        <span class="adm-nav-icon">🥋</span><span class="adm-nav-label">Corsi</span>
+      </button>
+      <button class="adm-nav-item" id="nav-prenotazioni" onclick="showAdmPage('prenotazioni')">
+        <span class="adm-nav-icon">📝</span><span class="adm-nav-label">Prenotaz.</span>
+      </button>
+      <button class="adm-nav-item" id="nav-messaggi" onclick="showAdmPage('messaggi')">
+        <span class="adm-nav-icon">✉️</span><span class="adm-nav-label">Messaggi</span>
+      </button>
+      <button class="adm-nav-item" id="nav-galleria" onclick="showAdmPage('galleria')">
+        <span class="adm-nav-icon">🖼️</span><span class="adm-nav-label">Galleria</span>
+      </button>
+      <button class="adm-nav-item" id="nav-news" onclick="showAdmPage('news')">
+        <span class="adm-nav-icon">📰</span><span class="adm-nav-label">News</span>
+      </button>
+      <button class="adm-nav-item" id="nav-impostazioni" onclick="showAdmPage('impostazioni')">
+        <span class="adm-nav-icon">⚙️</span><span class="adm-nav-label">Impost.</span>
+      </button>
+    </nav>
+
+    </div><!-- end .adm-main -->
+
+  </div><!-- end #admin-shell -->
+</div><!-- end #admin-view -->
+
+<div id="toast"></div>
+
+<script>
+// ── Mode switching ──
+function switchMode(mode) {
+  const pills = document.querySelectorAll('.demo-pill');
+  if (mode === 'public') {
+    pills[0].classList.add('active'); pills[1].classList.remove('active');
+    document.getElementById('public-view').style.display = 'block';
+    document.getElementById('admin-view').style.display = 'none';
+  } else {
+    pills[1].classList.add('active'); pills[0].classList.remove('active');
+    document.getElementById('public-view').style.display = 'none';
+    document.getElementById('admin-view').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+}
+
+// ── Mobile menu ──
+let menuOpen = false;
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  document.getElementById('mobile-menu').classList.toggle('open', menuOpen);
+  const t = (s) => menuOpen ? s : '';
+  document.getElementById('ham-1').style.transform = menuOpen ? 'rotate(45deg) translate(5px,5px)' : '';
+  document.getElementById('ham-2').style.opacity = menuOpen ? '0' : '';
+  document.getElementById('ham-3').style.transform = menuOpen ? 'rotate(-45deg) translate(5px,-5px)' : '';
+}
+function closeMenu() { menuOpen = false; toggleMenu(); toggleMenu(); menuOpen = false;
+  document.getElementById('mobile-menu').classList.remove('open');
+  ['ham-1','ham-2','ham-3'].forEach(id => { document.getElementById(id).style.transform=''; document.getElementById(id).style.opacity=''; });
+}
+
+// ── Contact form ──
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+  showToast('✅ Richiesta inviata con successo!');
+}
+
+// ── Admin login / logout ──
+function doLogin(e) {
+  e.preventDefault();
+  document.getElementById('admin-login').style.display = 'none';
+  document.getElementById('admin-shell').style.display = 'flex';
+  showToast('👋 Benvenuto, Antonio!');
+}
+function doLogout() {
+  document.getElementById('admin-shell').style.display = 'none';
+  document.getElementById('admin-login').style.display = 'flex';
+  showToast('👋 Disconnesso');
+}
+
+// ── Admin navigation ──
+const pageTitles = {
+  dashboard:'Dashboard', corsi:'Gestione Corsi', prenotazioni:'Prenotazioni',
+  messaggi:'Messaggi', galleria:'Galleria', news:'News', impostazioni:'Impostazioni'
+};
+function showAdmPage(name) {
+  document.querySelectorAll('.adm-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  // Bottom nav
+  document.querySelectorAll('.adm-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('nav-' + name).classList.add('active');
+  document.getElementById('nav-' + name).scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+  // Sidebar
+  document.querySelectorAll('.adm-sidebar-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sbar-' + name).classList.add('active');
+  document.getElementById('adm-page-title').textContent = pageTitles[name];
+  document.querySelector('.adm-content').scrollTop = 0;
+}
+
+// ── News editor toggle ──
+function toggleEditor() {
+  const ed = document.getElementById('news-editor');
+  ed.classList.toggle('open');
+  if (ed.classList.contains('open')) document.querySelector('.adm-content').scrollTop = 0;
+}
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Scroll animations ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(el => {
+    if (el.isIntersecting) { el.target.style.opacity='1'; el.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.corso-card, .news-card, .gallery-item').forEach(el => {
+  el.style.opacity='0'; el.style.transform='translateY(16px)';
+  el.style.transition='opacity .45s ease, transform .45s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
