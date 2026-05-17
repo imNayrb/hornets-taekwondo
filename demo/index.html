@@ -182,7 +182,7 @@
        ADMIN PANEL
     ════════════════════════════════════════════ */
 
-    #admin-view{display:none;height:calc(100svh - 44px);background:#08080F;overflow:hidden;}
+    #admin-view{display:none;position:fixed;top:44px;left:0;right:0;bottom:0;background:#08080F;overflow:hidden;}
 
     /* Login */
     #admin-login{display:flex;align-items:center;justify-content:center;height:100%;overflow-y:auto;padding:20px;background:linear-gradient(135deg,#08080F 0%,#0f0a1a 100%);}
@@ -199,7 +199,7 @@
     .login-btn:hover{background:#E08C00;transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,166,35,.4);}
 
     /* Admin shell — mobile: column; desktop: row (sidebar + main) */
-    #admin-shell{display:none;height:100%;flex-direction:column;overflow:hidden;}
+    #admin-shell{display:none;width:100%;height:100%;flex-direction:column;overflow:hidden;}
     @media(min-width:768px){#admin-shell{flex-direction:row;}}
 
     /* ── Sidebar (desktop only) ── */
@@ -679,7 +679,7 @@
 </div>
 
 <!-- ════════════════════ ADMIN PANEL ════════════════════ -->
-<div id="admin-view" class="main-offset">
+<div id="admin-view">
 
   <!-- Login -->
   <div id="admin-login">
